@@ -202,6 +202,7 @@ web/build/
 # Python/Flask files
 server/__pycache__/
 server/instance/
+server/migrations/
 server/.env
 server/.venv/
 server/venv/
