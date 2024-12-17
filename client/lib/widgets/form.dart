@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'form_submit_button.dart';
 
 class BasicForm extends StatefulWidget {
-  List<Widget> children;
+  final List<Widget> children;
   final String formName;
   final String submitButtonText;
   final Function submitButtonCallback;
@@ -17,9 +17,7 @@ class BasicForm extends StatefulWidget {
   BasicForm(this.children, this.formName, this.submitButtonText, this.submitButtonCallback, {super.key});
 
   @override 
-  _BasicFormState createState() { 
-    return _BasicFormState();
-  }
+  State<BasicForm> createState() => _BasicFormState();
 }
 
 class _BasicFormState extends State<BasicForm> {
@@ -27,8 +25,6 @@ class _BasicFormState extends State<BasicForm> {
 
   @override
   Widget build(BuildContext context) {
-    widget.children.add(FormSubmitButton(widget.submitButtonText, widget.submitButtonCallback, _formKey));
-
     return 
     Scaffold(
       appBar: AppBar(
@@ -53,7 +49,10 @@ class _BasicFormState extends State<BasicForm> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
-                    children: widget.children,
+                    children: [
+                      ...widget.children, 
+                      FormSubmitButton(widget.submitButtonText, widget.submitButtonCallback, _formKey)
+                    ],
                   ),
                 ),
               ),

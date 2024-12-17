@@ -4,7 +4,13 @@
 UI Screen: Login Screen
 */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+
+import 'package:flutter/foundation.dart';
+import 'package:m_y_assets/widgets/mobile_container.dart';
+import 'package:m_y_assets/widgets/web_and_desktop_container.dart';
 
 import 'home_screen.dart';
 import 'register_screen.dart';
@@ -26,7 +32,15 @@ class LoginScreen extends StatelessWidget {
       passwordController.text,
     );
     if (success) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      if (kIsWeb) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => WebAndDesktopContainer()));
+      } else {
+        if (Platform.isAndroid || Platform.isIOS) {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MobileContainer()));
+        } else {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => WebAndDesktopContainer()));
+        }
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

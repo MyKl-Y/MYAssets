@@ -28,7 +28,7 @@ class FormInput extends StatefulWidget {
   });
 
   @override 
-  _FormInputState createState() => _FormInputState();
+  State<FormInput> createState() => _FormInputState();
 }
 
 class _FormInputState extends State<FormInput> {

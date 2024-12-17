@@ -5,15 +5,15 @@ UI Screen: Home Screen
 */
 
 import 'package:flutter/material.dart';
-import '../services/api_service.dart';
+//import '../services/api_service.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ApiService apiService = ApiService();
+  /* final ApiService apiService = ApiService();
   List<dynamic> transactions = [];
 
   @override
@@ -45,6 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
+    );
+  } */
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Home')),
+      body: Center(child: Text('Home'))
     );
   }
 }

@@ -5,37 +5,67 @@ Entry Point
 */
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
-
-import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:m_y_assets/widgets/mobile_container.dart';
+import 'package:m_y_assets/widgets/web_and_desktop_container.dart';
 
-void main() {
+import 'screens/login_screen.dart';
+//import 'screens/home_screen.dart';
+
+import 'utils/token_manager.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  String? token = await TokenManager.getToken();
+
   if (kIsWeb) {
-    print('Running on the web!');
-    log('Running on the web!');
-  } else if (Platform.isAndroid) {
-    print('Running on Android!');
-    log('Running on Android!');
-  } else if (Platform.isIOS) {
-    print('Running on iOS!');
-    log('Running on iOS!');
+    print('Running on Web!');
+    log('Running on Web!');
   } else {
-    print('Running on ${Platform.operatingSystem}!');
-    log('Running on ${Platform.operatingSystem}!');
+    if (Platform.isFuchsia || Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+      print('Running on ${Platform.operatingSystem}!');
+      log('Running on ${Platform.operatingSystem}!');
+    } else if (Platform.isAndroid) {
+      print('Running on Android!');
+      log('Running on Android!');
+    } else if (Platform.isIOS) {
+      print('Running on iOS!');
+      log('Running on iOS!');
+    } 
   }
-  runApp(MyApp());
+  runApp(MYAssetsApp(isLoggedIn: token != null));
 }
 
-class MyApp extends StatelessWidget {
+class MYAssetsApp extends StatelessWidget {
+  final bool isLoggedIn;
+
+  const MYAssetsApp({required this.isLoggedIn, super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Personal Finance App',
-      theme: ThemeData(useMaterial3: true),
-      home: LoginScreen(),
-    );
+    if (kIsWeb) {
+      return MaterialApp(
+          title: 'M.Y.Assets - Personal Finance App',
+          //theme: ThemeData(useMaterial3: true),
+          home: isLoggedIn ? WebAndDesktopContainer() : LoginScreen(),
+        );
+    } else {
+      if (Platform.isIOS || Platform.isAndroid) {
+        return MaterialApp(
+          title: 'M.Y.Assets - Personal Finance App',
+          //theme: ThemeData(useMaterial3: true),
+          home: isLoggedIn ? MobileContainer() : LoginScreen(),
+        );
+      } else {
+        return MaterialApp(
+          title: 'M.Y.Assets - Personal Finance App',
+          //theme: ThemeData(useMaterial3: true),
+          home: isLoggedIn ? WebAndDesktopContainer() : LoginScreen(),
+        );
+      }
+    }
   }
 }
