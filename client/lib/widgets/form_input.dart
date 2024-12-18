@@ -58,38 +58,40 @@ class _FormInputState extends State<FormInput> {
         validator: (value) {
           List<String> type = widget.type.split(' ');
 
-          if (value == null || value.isEmpty) {
-            return 'Must not leave ${type[0]} field blank';
-          }
-
-          if (RegExp(r'[^\S]').hasMatch(value)) {
-            return 'Must not have whitespaces in ${type[0]} field';
-          }
-
-          if (type[0] == 'email') {
-            if (!(RegExp(r'^(?=.*[\.@])[A-Za-z\d\.@$!%*?&\-_]{5,}$').hasMatch(value))) {
-              return 'Must enter a valid email';
-            }
-          } else if (type[0] == 'password') {
-            String message = '';
-
-            if (value.length < 8) {
-              return 'Password must contain at least 8 characters long';
+          if (['email', 'password', 'username'].contains(type[0])) {
+            if (value == null || value.isEmpty) {
+              return 'Must not leave ${type[0]} field blank';
             }
 
-            regExps.forEach((key, val) {
-              if (!val.hasMatch(value) && !(RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\.@$!%*?&\-_])[A-Za-z\d\.@$!%*?&\-_]{8,}$').hasMatch(value))) {
-                message += 'Password must contain $key';
-              } else if (!(RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\.@$!%*?&\-_])[A-Za-z\d\.@$!%*?&\-_]{8,}$').hasMatch(value))) {
-                message = 'Password is invalid (Special Character and/or Alphanumerics)';
+            if (RegExp(r'[^\S]').hasMatch(value)) {
+              return 'Must not have whitespaces in ${type[0]} field';
+            }
+
+            if (type[0] == 'email') {
+              if (!(RegExp(r'^(?=.*[\.@])[A-Za-z\d\.@$!%*?&\-_]{5,}$').hasMatch(value))) {
+                return 'Must enter a valid email';
               }
-            });
+            } else if (type[0] == 'password') {
+              String message = '';
 
-            if (message != '') return message;
-          }
+              if (value.length < 8) {
+                return 'Password must contain at least 8 characters long';
+              }
 
-          if (widget.additionalValidator != null) {
-            return widget.additionalValidator!(value);
+              regExps.forEach((key, val) {
+                if (!val.hasMatch(value) && !(RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\.@$!%*?&\-_])[A-Za-z\d\.@$!%*?&\-_]{8,}$').hasMatch(value))) {
+                  message += 'Password must contain $key';
+                } else if (!(RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\.@$!%*?&\-_])[A-Za-z\d\.@$!%*?&\-_]{8,}$').hasMatch(value))) {
+                  message = 'Password is invalid (Special Character and/or Alphanumerics)';
+                }
+              });
+
+              if (message != '') return message;
+            }
+
+            if (widget.additionalValidator != null) {
+              return widget.additionalValidator!(value);
+            }
           }
           
           return null;

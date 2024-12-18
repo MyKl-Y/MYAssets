@@ -42,6 +42,57 @@ class ApiService {
     return false;
   }
 
+  // Add Account
+  Future<Map<String, dynamic>> addAccount(String name, String description, String accountType, double balance) async {
+    final token = await TokenManager.getToken();
+    final response = await http.post(
+      Uri.parse('$baseUrl/accounts'),
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'description': description,
+        'type': accountType,
+        'balance': balance
+      }),
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  // Fetch Accounts
+  Future<List<dynamic>> getAccounts() async {
+    final token = await TokenManager.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/accounts'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load transactions');
+    }
+  }
+
+  // Add Transaction
+  Future<Map<String, dynamic>> addTransaction(double amount, String description, String category, String account, String type, DateTime date) async {
+    final token = await TokenManager.getToken();
+    final response = await http.post(
+      Uri.parse('$baseUrl/transactions'),
+      headers: {'Authorization': 'Bearer $token'},
+      body: jsonEncode({
+        'amount': amount,
+        'description': description,
+        'category': category,
+        'account': account,
+        'type': type,
+        'timestamp': date
+      }),
+    );
+
+    return jsonDecode(response.body);
+  }
+
   // Fetch Transactions
   Future<List<dynamic>> getTransactions() async {
     final token = await TokenManager.getToken();
