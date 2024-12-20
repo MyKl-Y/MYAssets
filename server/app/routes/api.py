@@ -1,4 +1,5 @@
 # server/app/api.py
+from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from ..models import db, User, Transaction, Budget, Account
@@ -48,7 +49,7 @@ def add_transaction():
     category = data['category']
     account = data['account']
     type = data['type']
-    timestamp = data['timestamp']
+    timestamp = datetime.fromisoformat(data['timestamp'])
 
     new_transaction = Transaction(
         user_id = user_id,
