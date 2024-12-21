@@ -6,6 +6,7 @@ Database Models
 
 from . import db
 from sqlalchemy import Integer, String, Float, DateTime, Column, ForeignKey
+from sqlalchemy.orm import validates
 from datetime import datetime, timezone
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -28,7 +29,7 @@ class User(UserMixin, db.Model):
             'username': self.username,
             'email': self.email
         }
-    
+
 class Account(db.Model):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
@@ -56,9 +57,9 @@ class Transaction(db.Model):
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     amount = Column(Float, nullable=False)
     description = Column(String(256))
-    category = Column(String(64))
+    category = Column(String(64), nullable=False)
     account = Column(String(64))
-    type = Column(String(64))
+    type = Column(String(64), nullable=False)
     timestamp = Column(DateTime, index=True, default=datetime.now(timezone.utc))
 
     def __init__(self, **kwargs):
@@ -78,6 +79,25 @@ class Transaction(db.Model):
             'account': self.account,
             'type': self.type,
         }
+    
+    @validates('type')
+    def validate_type(self, key, transaction_type):
+        if transaction_type not in ['Income', 'Expense']:
+            raise ValueError("Transaction type must be 'Income' or 'Expense")
+        return transaction_type
+    
+    @validates('category')
+    def validate_category(self, key, category):
+        allowed_categories = {
+            'Income': ['Salary', 'Gift', 'Interest', 'Other'],
+            'Expense': [
+                'Housing', 'Food', 'Transportation', 'Utilities',
+                'Medical', 'Education', 'Childcare', 'Subscriptions', 'Other'
+            ]
+        }
+        if self.type and category not in allowed_categories.get(self.type, []):
+            raise ValueError(f"Category '{category}' is not valid for transaction type '{self.type}'")
+        return category
 
 class Budget(db.Model):
     id = Column(Integer, primary_key=True)

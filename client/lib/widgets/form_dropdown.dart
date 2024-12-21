@@ -13,52 +13,75 @@ class FormDropdown extends StatefulWidget {
   final String hint;
   final String label;
   final IconData icon;
+  final bool hasDefaultValue;
+  final Function(String?)? onChanged; // Add a callback
 
   const FormDropdown({
-    required this.items, 
+    required this.items,
     required this.controller,
     required this.hint,
     required this.label,
     required this.icon,
-    super.key
+    required this.hasDefaultValue,
+    this.onChanged, // Optional callback for changes
+    super.key,
   });
 
   @override
-  State<FormDropdown> createState() => _FormDropdownState();
+  State<FormDropdown> createState() => FormDropdownState();
 }
 
-typedef MenuEntry = DropdownMenuEntry<String>;
+class FormDropdownState extends State<FormDropdown> {
+  List<String> currentItems = [];
+  String? dropdownValue;
 
-class _FormDropdownState extends State<FormDropdown> {
+  @override
+  void initState() {
+    super.initState();
+    currentItems = widget.items;
+    dropdownValue = widget.hasDefaultValue && currentItems.isNotEmpty
+        ? currentItems.first
+        : null;
+  }
+
+  void resetItems(List<String> newItems) {
+    setState(() {
+      currentItems = newItems;
+      dropdownValue = widget.hasDefaultValue && currentItems.isNotEmpty
+          ? currentItems.first
+          : null;
+      widget.controller.text = dropdownValue ?? '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<MenuEntry> menuEntries = UnmodifiableListView<MenuEntry>(
-      widget.items.map<MenuEntry>((String name) => MenuEntry(value: name, label: name)),
-    );
-    String dropdownValue = '';
-
     return Padding(
-      padding: const EdgeInsets.all(5.0), 
-      child:LayoutBuilder(
-        builder: (context, constraints) {
-          return DropdownMenu<String>(
-            width: constraints.maxWidth,
-            controller: widget.controller,
-            label: Text(widget.label),
-            hintText: widget.hint,
-            leadingIcon: Icon(widget.icon, color: Theme.of(context).colorScheme.inversePrimary,),
-            //initialSelection: widget.items.first,
-            onSelected: (String? value) {
-              // This is called when the user selects an item.
-              setState(() {
-                dropdownValue = value!;
-              });
-            },
-            dropdownMenuEntries: menuEntries,
+      padding: const EdgeInsets.all(5.0),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: widget.label,
+          prefixIcon: Icon(widget.icon, color: Theme.of(context).colorScheme.inversePrimary,),
+          hintText: widget.hint,
+          border: OutlineInputBorder(),
+        ),
+        value: dropdownValue,
+        items: currentItems.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
           );
-        }
-      )
+        }).toList(),
+        onChanged: (String? value) {
+          setState(() {
+            dropdownValue = value!;
+            widget.controller.text = value;
+          });
+          if (widget.onChanged != null) {
+            widget.onChanged!(value); // Trigger callback
+          }
+        },
+      ),
     );
   }
 }

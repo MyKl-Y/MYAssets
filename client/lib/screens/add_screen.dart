@@ -20,6 +20,8 @@ class AddScreen extends StatefulWidget {
 class _AddScreenState extends State<AddScreen> {
   final ApiService apiService = ApiService();
 
+  final GlobalKey<FormDropdownState> categoryDropdownKey = GlobalKey<FormDropdownState>();
+
   final TextEditingController accountNameController = TextEditingController();
   final TextEditingController accountDescriptionController = TextEditingController();
   final TextEditingController accountTypeController = TextEditingController();
@@ -34,19 +36,10 @@ class _AddScreenState extends State<AddScreen> {
 
   List<String> accountNames = [];
   List<String> transactionCategoryItems = [
+    'Other',
     'Salary', 'Gift', 'Interest',
-    'Housing',
-    'Food',
-    'Transportation',
-    'Utilities',
-    'Medical',
-    'Education',
-    'Childcare',
-    'Subscriptions',
-    'Other'
   ];
-  String prev = '';
-
+  
   @override 
   void initState() {
     super.initState();
@@ -66,6 +59,31 @@ class _AddScreenState extends State<AddScreen> {
       });
     }
   }
+
+  void _updateCategories(String selectedType) {
+    List<String> newCategories;
+    if (selectedType == 'Income') {
+      newCategories = ['Other', 'Salary', 'Gift', 'Interest',];
+    } else if (selectedType == 'Expense') {
+      newCategories = [
+        'Other',
+        'Housing',
+        'Food',
+        'Transportation',
+        'Utilities',
+        'Medical',
+        'Education',
+        'Childcare',
+        'Subscriptions',
+      ];
+    } else {
+      newCategories = [];
+    }
+
+    // Update the dropdown directly
+    categoryDropdownKey.currentState?.resetItems(newCategories);
+  }
+
 
   void _addAccount(BuildContext context) async {
     try {
@@ -156,6 +174,7 @@ class _AddScreenState extends State<AddScreen> {
                   hint: 'i.e. Savings, Checking',
                   label: 'Account Type',
                   icon: Icons.savings,
+                  hasDefaultValue: false,
                 ),
                 /* FormInput(
                   type:'type', 
@@ -209,27 +228,12 @@ class _AddScreenState extends State<AddScreen> {
                   keyboardType: TextInputType.text
                 ),
                 FormDropdown(
-                  controller: transactionCategoryController, 
-                  hint: 'e.g. Childcare, Subscription, etc.', 
-                  label: 'Transaction Category', 
-                  icon: Icons.category, 
-                  items: transactionCategoryItems,
-                ),
-                /* FormInput(
-                  type:'category', 
-                  controller: transactionCategoryController, 
-                  hint: 'e.g. Childcare, Subscription, etc.', 
-                  label: 'Transaction Category', 
-                  icon: Icons.category, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ), */
-                FormDropdown(
                   controller: transactionAccountController, 
                   hint: 'Savings', 
                   label: 'Transaction Account', 
                   icon: Icons.account_balance, 
-                  items: accountNames
+                  items: accountNames,
+                  hasDefaultValue: false,
                 ),
                 /* FormInput(
                   type:'account', 
@@ -246,6 +250,12 @@ class _AddScreenState extends State<AddScreen> {
                   label: 'Transaction Type', 
                   icon: Icons.attach_money, 
                   items: ['Income', 'Expense'],
+                  hasDefaultValue: true,
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      _updateCategories(value); // Call the method to update categories
+                    }
+                  },
                 ),
                 /* FormInput(
                   type:'type', 
@@ -253,6 +263,24 @@ class _AddScreenState extends State<AddScreen> {
                   hint: 'i.e., Income, Expense', 
                   label: 'Transaction Type', 
                   icon: Icons.attach_money, 
+                  password: false, 
+                  keyboardType: TextInputType.text
+                ), */
+                FormDropdown(
+                  key: categoryDropdownKey, // Force widget rebuild on list update
+                  controller: transactionCategoryController, 
+                  hint: 'e.g. Childcare, Subscription, etc.', 
+                  label: 'Transaction Category', 
+                  icon: Icons.category, 
+                  items: transactionCategoryItems,
+                  hasDefaultValue: true,
+                ),
+                /* FormInput(
+                  type:'category', 
+                  controller: transactionCategoryController, 
+                  hint: 'e.g. Childcare, Subscription, etc.', 
+                  label: 'Transaction Category', 
+                  icon: Icons.category, 
                   password: false, 
                   keyboardType: TextInputType.text
                 ), */
