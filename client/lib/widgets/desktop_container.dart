@@ -1,7 +1,7 @@
-// client/lib/widgets/web_and_desktop_container.dart
+// client/lib/widgets/desktop_container.dart
 
 /*
-Container Widget for placement of navigation bar and content for web and desktop
+Container Widget for placement of navigation bar and content for desktop
 */
 
 import 'package:flutter/material.dart';
