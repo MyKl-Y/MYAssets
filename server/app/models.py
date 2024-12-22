@@ -60,6 +60,7 @@ class Transaction(db.Model):
     category = Column(String(64), nullable=False)
     account = Column(String(64))
     type = Column(String(64), nullable=False)
+    apy = Column(Float)
     timestamp = Column(DateTime, index=True, default=datetime.now(timezone.utc))
 
     def __init__(self, **kwargs):
