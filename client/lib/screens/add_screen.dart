@@ -87,24 +87,28 @@ class _AddScreenState extends State<AddScreen> {
 
   void _addAccount(BuildContext context) async {
     try {
-      Map<String, dynamic> response = await apiService.addAccount(
+      await apiService.addAccount(
         accountNameController.text,
         accountDescriptionController.text,
         accountTypeController.text,
         double.parse(accountBalanceController.text)
       );
 
-      Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text(
-            'Adding account failed: ${e.toString()}',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        )
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(child: Text(
+              'Adding account failed: ${e.toString()}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          )
+        );
+      }
     }
   }
 
@@ -114,7 +118,7 @@ class _AddScreenState extends State<AddScreen> {
       String formattedTimestamp = transactionTimestamp.toIso8601String();
 
 
-      Map<String, dynamic> response = await apiService.addTransaction(
+      await apiService.addTransaction(
         double.parse(transactionAmountController.text),
         transactionDescriptionController.text,
         transactionCategoryController.text,
@@ -123,17 +127,21 @@ class _AddScreenState extends State<AddScreen> {
         formattedTimestamp
       );
 
-      Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text(
-            'Adding transaction failed: ${e.toString()}',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        )
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(child: Text(
+              'Adding transaction failed: ${e.toString()}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          )
+        );
+      }
     }
   }
 
@@ -144,164 +152,128 @@ class _AddScreenState extends State<AddScreen> {
       body: Column( 
         children: [
           ElevatedButton(
-        onPressed: () async {
-          await showDialog<void>(
-            context: context,
-            builder: (context) => Dialog( 
-              child: BasicForm(
-                [FormInput(
-                  type:'name', 
-                  controller: accountNameController, 
-                  hint: 'Savings', 
-                  label: 'Account Name', 
-                  icon: Icons.account_box, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ),
-                FormInput(
-                  type:'description', 
-                  controller: accountDescriptionController, 
-                  hint: 'Well\'s Fargo Bank', 
-                  label: 'Account Description', 
-                  icon: Icons.account_balance, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ),
-                FormDropdown(
-                  items: ['Savings', 'Checking'],
-                  controller: accountTypeController,
-                  hint: 'i.e. Savings, Checking',
-                  label: 'Account Type',
-                  icon: Icons.savings,
-                  hasDefaultValue: false,
-                ),
-                /* FormInput(
-                  type:'type', 
-                  controller: accountTypeController, 
-                  hint: 'i.e. Savings, Checking', 
-                  label: 'Account Type', 
-                  icon: Icons.savings, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ), */
-                FormInput(
-                  type:'balance', 
-                  controller: accountBalanceController, 
-                  hint: '0', 
-                  label: 'Account Balance', 
-                  icon: Icons.money, 
-                  password: false, 
-                  keyboardType: TextInputType.number
-                ),], 
-                'Add New Account', 
-                'Add', 
-                () { _addAccount(context); }
-              )
-            )
-          );
-        },
-        child: const Text('Add New Account'),
-      ),
-      ElevatedButton(
-        onPressed: () async {
-          await showDialog<void>(
-            context: context,
-            builder: (context) => Dialog( 
-              child: BasicForm(
-                [FormInput(
-                  type:'amount', 
-                  controller: transactionAmountController, 
-                  hint: '0.00', 
-                  label: 'Transaction Amount', 
-                  icon: Icons.money, 
-                  password: false, 
-                  keyboardType: TextInputType.number
-                ),
-                FormInput(
-                  type:'description', 
-                  controller: transactionDescriptionController, 
-                  hint: 'Amazon Subscription', 
-                  label: 'Transaction Description', 
-                  icon: Icons.description, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ),
-                FormDropdown(
-                  controller: transactionAccountController, 
-                  hint: 'Savings', 
-                  label: 'Transaction Account', 
-                  icon: Icons.account_balance, 
-                  items: accountNames,
-                  hasDefaultValue: false,
-                ),
-                /* FormInput(
-                  type:'account', 
-                  controller: transactionAccountController, 
-                  hint: 'Savings', 
-                  label: 'Transaction Account', 
-                  icon: Icons.account_balance, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ), */
-                FormDropdown(
-                  controller: transactionTypeController, 
-                  hint: 'i.e., Income, Expense', 
-                  label: 'Transaction Type', 
-                  icon: Icons.attach_money, 
-                  items: ['Income', 'Expense'],
-                  hasDefaultValue: true,
-                  onChanged: (String? value) {
-                    if (value != null) {
-                      _updateCategories(value); // Call the method to update categories
-                    }
-                  },
-                ),
-                /* FormInput(
-                  type:'type', 
-                  controller: transactionTypeController, 
-                  hint: 'i.e., Income, Expense', 
-                  label: 'Transaction Type', 
-                  icon: Icons.attach_money, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ), */
-                FormDropdown(
-                  key: categoryDropdownKey, // Force widget rebuild on list update
-                  controller: transactionCategoryController, 
-                  hint: 'e.g. Childcare, Subscription, etc.', 
-                  label: 'Transaction Category', 
-                  icon: Icons.category, 
-                  items: transactionCategoryItems,
-                  hasDefaultValue: true,
-                ),
-                /* FormInput(
-                  type:'category', 
-                  controller: transactionCategoryController, 
-                  hint: 'e.g. Childcare, Subscription, etc.', 
-                  label: 'Transaction Category', 
-                  icon: Icons.category, 
-                  password: false, 
-                  keyboardType: TextInputType.text
-                ), */
-                FormInput(
-                  type:'timestamp', 
-                  controller: transactionTimestampController, 
-                  hint: 'Date', 
-                  label: 'Transaction Date', 
-                  icon: Icons.date_range, 
-                  password: false, 
-                  keyboardType: TextInputType.datetime
-                ),], 
-                'Add New Transaction', 
-                'Add', 
-                () { _addTransaction(context); }
-              )
-            )
-          );
-        },
-        child: const Text('Add New Transaction'),
-      )
-      ]
+            onPressed: () async {
+              await showDialog<void>(
+                context: context,
+                builder: (context) => Dialog( 
+                  child: BasicForm(
+                    [FormInput(
+                      type:'name', 
+                      controller: accountNameController, 
+                      hint: 'Savings', 
+                      label: 'Account Name', 
+                      icon: Icons.account_box, 
+                      password: false, 
+                      keyboardType: TextInputType.text
+                    ),
+                    FormInput(
+                      type:'description', 
+                      controller: accountDescriptionController, 
+                      hint: 'Well\'s Fargo Bank', 
+                      label: 'Account Description', 
+                      icon: Icons.account_balance, 
+                      password: false, 
+                      keyboardType: TextInputType.text
+                    ),
+                    FormDropdown(
+                      items: ['Savings', 'Checking'],
+                      controller: accountTypeController,
+                      hint: 'i.e. Savings, Checking',
+                      label: 'Account Type',
+                      icon: Icons.savings,
+                      hasDefaultValue: false,
+                    ),
+                    FormInput(
+                      type:'balance', 
+                      controller: accountBalanceController, 
+                      hint: '0', 
+                      label: 'Account Balance', 
+                      icon: Icons.money, 
+                      password: false, 
+                      keyboardType: TextInputType.number
+                    ),], 
+                    'Add New Account', 
+                    'Add', 
+                    () { _addAccount(context); }
+                  )
+                )
+              );
+            },
+            child: const Text('Add New Account'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await showDialog<void>(
+                context: context,
+                builder: (context) => Dialog( 
+                  child: BasicForm(
+                    [FormInput(
+                      type:'amount', 
+                      controller: transactionAmountController, 
+                      hint: '0.00', 
+                      label: 'Transaction Amount', 
+                      icon: Icons.money, 
+                      password: false, 
+                      keyboardType: TextInputType.number
+                    ),
+                    FormInput(
+                      type:'description', 
+                      controller: transactionDescriptionController, 
+                      hint: 'Amazon Subscription', 
+                      label: 'Transaction Description', 
+                      icon: Icons.description, 
+                      password: false, 
+                      keyboardType: TextInputType.text
+                    ),
+                    FormDropdown(
+                      controller: transactionAccountController, 
+                      hint: 'Savings', 
+                      label: 'Transaction Account', 
+                      icon: Icons.account_balance, 
+                      items: accountNames,
+                      hasDefaultValue: false,
+                    ),
+                    FormDropdown(
+                      controller: transactionTypeController, 
+                      hint: 'i.e., Income, Expense', 
+                      label: 'Transaction Type', 
+                      icon: Icons.attach_money, 
+                      items: ['Income', 'Expense'],
+                      hasDefaultValue: true,
+                      onChanged: (String? value) {
+                        if (value != null) {
+                          _updateCategories(value); // Call the method to update categories
+                        }
+                      },
+                    ),
+                    FormDropdown(
+                      key: categoryDropdownKey, // Force widget rebuild on list update
+                      controller: transactionCategoryController, 
+                      hint: 'e.g. Childcare, Subscription, etc.', 
+                      label: 'Transaction Category', 
+                      icon: Icons.category, 
+                      items: transactionCategoryItems,
+                      hasDefaultValue: true,
+                    ),
+                    FormInput(
+                      type:'timestamp', 
+                      controller: transactionTimestampController, 
+                      hint: 'Date', 
+                      label: 'Transaction Date', 
+                      icon: Icons.date_range, 
+                      password: false, 
+                      keyboardType: TextInputType.datetime
+                    ),], 
+                    'Add New Transaction', 
+                    'Add', 
+                    () { _addTransaction(context); }
+                  )
+                )
+              );
+            },
+            child: const Text('Add New Transaction'),
+          )
+        ]
       )
     );
   }

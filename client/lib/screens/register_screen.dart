@@ -25,24 +25,26 @@ class RegisterScreen extends StatelessWidget {
     final String password = passwordController.text;
     //final String confirmPassword = confirmPasswordController.text;
 
-    try {      
+    try {
       final response = await apiService.registerUser(username, email, password);
-      if (!(response['message'].toString().contains('Username already exists'))) {
+      if (!(response['message'].toString().contains('Username already exists')) && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response['message'] ?? 'Registration successful!')));
         Navigator.pop(context); // Navigate back to login screen
       } else {
         throw Exception(response['message']);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text(
-            'Registration failed: ${e.toString()}',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        )
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(child: Text(
+              'Registration failed: ${e.toString()}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          )
+        );
+      }
     }
   }
 

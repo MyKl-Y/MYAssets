@@ -12,11 +12,14 @@ import 'login_screen.dart';
 
 void _logout(BuildContext context) async {
   await TokenManager.deleteToken();
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (context) => LoginScreen()), 
-    (route) => false,
-  );
+
+  if (context.mounted) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), 
+      (route) => false,
+    );
+  }
 }
 
 class AccountScreen extends StatefulWidget {

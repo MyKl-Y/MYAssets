@@ -31,26 +31,29 @@ class LoginScreen extends StatelessWidget {
       usernameController.text,
       passwordController.text,
     );
-    if (success) {
-      if (kIsWeb) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => WebContainer()));
-      } else {
-        if (Platform.isAndroid || Platform.isIOS) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MobileContainer()));
+    
+    if (context.mounted) {
+      if (success) {
+        if (kIsWeb) {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => WebContainer()));
         } else {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => DesktopContainer()));
+          if (Platform.isAndroid || Platform.isIOS) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MobileContainer()));
+          } else {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => DesktopContainer()));
+          }
         }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(child: Text(
+              'Login failed', 
+              style: TextStyle(fontWeight: FontWeight.bold)
+            )),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          )
+        );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text(
-            'Login failed', 
-            style: TextStyle(fontWeight: FontWeight.bold)
-          )),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        )
-      );
     }
   }
 
