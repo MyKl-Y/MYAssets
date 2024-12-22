@@ -19,7 +19,7 @@ import 'utils/token_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  String? token = await TokenManager.getToken();
+  String? token = await TokenManager.getAccessToken();
 
   if (kIsWeb) {
     print('Running on Web!');

@@ -11,6 +11,32 @@ import '../utils/token_manager.dart';
 class ApiService {
   static const String baseUrl = 'http://127.0.0.1:42069/api/v1';
 
+  Future<http.Response> _authenticatedRequest(
+    Future<http.Response> Function(String accessToken) requestFunction,
+  ) async {
+    String? accessToken = await TokenManager.getAccessToken();
+
+    if (accessToken == null) {
+      throw Exception('No access token available');
+    }
+
+    // Attempt the request
+    http.Response response = await requestFunction(accessToken);
+
+    if (response.statusCode == 401) { // Token expired
+      // Try refreshing the token
+      accessToken = await TokenManager.refreshAccessToken();
+      if (accessToken != null) {
+        // Retry the request with the new token
+        response = await requestFunction(accessToken);
+      } else {
+        throw Exception('Token refresh failed');
+      }
+    }
+
+    return response;
+  }
+
   // User Registration
   Future<Map<String, dynamic>> registerUser(String username, String email, String password) async {
     final response = await http.post(
@@ -36,7 +62,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      await TokenManager.saveToken(data['access_token']);
+      await TokenManager.saveToken(data['access_token'], data['refresh_token']);
       return true;
     }
     return false;
@@ -44,17 +70,18 @@ class ApiService {
 
   // Add Account
   Future<Map<String, dynamic>> addAccount(String name, String description, String accountType, double balance) async {
-    final token = await TokenManager.getToken();
-    final response = await http.post(
-      Uri.parse('$baseUrl/accounts'),
-      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'name': name,
-        'description': description,
-        'type': accountType,
-        'balance': balance
-      }),
-    );
+    final response = await _authenticatedRequest((accessToken) {
+      return http.post(
+        Uri.parse('$baseUrl/accounts'),
+        headers: {'Authorization': 'Bearer $accessToken', 'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': name,
+          'description': description,
+          'type': accountType,
+          'balance': balance
+        }),
+      );
+    });
 
     if (response.statusCode == 201) {
       return jsonDecode(response.body);
@@ -65,11 +92,12 @@ class ApiService {
 
   // Fetch Accounts
   Future<List<dynamic>> getAccounts() async {
-    final token = await TokenManager.getToken();
-    final response = await http.get(
-      Uri.parse('$baseUrl/accounts'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+    final response = await _authenticatedRequest((accessToken) {
+      return http.get(
+        Uri.parse('$baseUrl/accounts'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+    });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -80,19 +108,20 @@ class ApiService {
 
   // Add Transaction
   Future<Map<String, dynamic>> addTransaction(double amount, String description, String category, String account, String type, String date) async {
-    final token = await TokenManager.getToken();
-    final response = await http.post(
-      Uri.parse('$baseUrl/transactions'),
-      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'amount': amount,
-        'description': description,
-        'category': category,
-        'account': account,
-        'type': type,
-        'timestamp': date
-      }),
-    );
+    final response = await _authenticatedRequest((accessToken) {
+      return http.post(
+        Uri.parse('$baseUrl/transactions'),
+        headers: {'Authorization': 'Bearer $accessToken', 'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'amount': amount,
+          'description': description,
+          'category': category,
+          'account': account,
+          'type': type,
+          'timestamp': date
+        }),
+      );
+    });
 
     if (response.statusCode == 201) {
       return jsonDecode(response.body);
@@ -103,11 +132,12 @@ class ApiService {
 
   // Fetch Transactions
   Future<List<dynamic>> getTransactions() async {
-    final token = await TokenManager.getToken();
-    final response = await http.get(
-      Uri.parse('$baseUrl/transactions'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+    final response = await _authenticatedRequest((accessToken) {
+      return http.get(
+        Uri.parse('$baseUrl/transactions'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+    });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

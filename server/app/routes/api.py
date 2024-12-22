@@ -1,7 +1,7 @@
 # server/app/api.py
 from datetime import datetime
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token, get_jwt_identity
 from ..models import db, User, Transaction, Budget, Account
 from ..utils import generate_token
 from werkzeug.security import check_password_hash
@@ -25,9 +25,18 @@ def login():
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
     if user and user.check_password(data['password']):
-        token = generate_token(identity=str(user.id))
-        return jsonify({"access_token": token, "user_id": user.id}), 200
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
+        return jsonify({"access_token": access_token, "refresh_token":refresh_token, "user_id": user.id}), 200
     return jsonify({"message": "Invalid username or password"}), 401
+
+# Refresh JWT
+@bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=str(identity))
+    return jsonify({"access_token": access_token}), 200
 
 # Get Current User
 @bp.route('/user', methods=['GET'])
