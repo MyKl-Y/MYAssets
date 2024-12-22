@@ -5,12 +5,15 @@ Container Widget for placement of navigation bar and content for desktop
 */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/add_screen.dart';
 import '../screens/transactions_screen.dart';
 import '../screens/account_screen.dart';
+
+import '../utils/nav_state_manager.dart';
 
 class DesktopContainer extends StatefulWidget {
   const DesktopContainer({super.key});
@@ -21,18 +24,44 @@ class DesktopContainer extends StatefulWidget {
 
 class _DesktopContainerState extends State<DesktopContainer> with TickerProviderStateMixin {
   late TabController _tabController;
+  late NavigationState navigationState;
 
-  @override 
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    navigationState = Provider.of<NavigationState>(context);
+
+    // Initialize TabController with the shared navigation state
+    _tabController = TabController(
+      length: 5,
+      vsync: this,
+      initialIndex: navigationState.currentPageIndex,
+    );
+
+    // Update NavigationState when the tab changes
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging || _tabController.index != navigationState.currentPageIndex) {
+        navigationState.setPageIndex(_tabController.index);
+      }
+    });
   }
 
-  int currentPageIndex = 0;
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+
+    final navigationState = Provider.of<NavigationState>(context);
+
+    // Update TabController index if NavigationState changes externally
+    if (_tabController.index != navigationState.currentPageIndex) {
+      _tabController.animateTo(navigationState.currentPageIndex);
+    }
 
     return Scaffold(
       appBar: AppBar(

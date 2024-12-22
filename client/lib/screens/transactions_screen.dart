@@ -36,16 +36,27 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Accounts')),
-      body: ListView.builder(
-        itemCount: accounts.length,
-        itemBuilder: (context, index) {
-          final account = accounts[index];
-          return ListTile(
-            title: Text(account['description'] ?? 'No description'),
-            subtitle: Text('Balance: ${account['balance']}'),
-          );
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 769) {
+            // Small screens (Mobile)
+            return ListView.builder(
+              itemCount: accounts.length,
+              itemBuilder: (context, index) {
+                final account = accounts[index];
+                return ListTile(
+                  title: Text(account['description'] ?? 'No description'),
+                  subtitle: Text('Balance: ${account['balance']}'),
+                );
+              },
+            );
+          } else {
+            // Large screens (Desktop)
+            return Container();
+          }
         },
-      ),
+      )
+      
     );
   }
 }

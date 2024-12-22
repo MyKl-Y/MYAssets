@@ -5,6 +5,7 @@ Container Widget for placement of navigation bar and content for mobile
 */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/dashboard_screen.dart';
@@ -12,19 +13,15 @@ import '../screens/add_screen.dart';
 import '../screens/transactions_screen.dart';
 import '../screens/account_screen.dart';
 
-class MobileContainer extends StatefulWidget {
+import '../utils/nav_state_manager.dart';
+
+class MobileContainer extends StatelessWidget {
   const MobileContainer({super.key});
-
-  @override
-  State<MobileContainer> createState() => _MobileContainerState();
-}
-
-class _MobileContainerState extends State<MobileContainer> with TickerProviderStateMixin {
-  int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final navigationState = Provider.of<NavigationState>(context);
 
     return Scaffold(
       extendBody: true,
@@ -36,16 +33,14 @@ class _MobileContainerState extends State<MobileContainer> with TickerProviderSt
           AddScreen(),
           TransactionsScreen(),
           AccountScreen(),
-        ][currentPageIndex],
+        ][navigationState.currentPageIndex],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton.large(
         shape: CircleBorder(),
         backgroundColor: theme.colorScheme.primary,
         onPressed: () {
-          setState(() {
-            currentPageIndex = 2;
-          });
+          navigationState.setPageIndex(2);
         },
         child: Icon(Icons.add_circle, color: theme.colorScheme.surface),
       ),
@@ -57,15 +52,13 @@ class _MobileContainerState extends State<MobileContainer> with TickerProviderSt
         elevation: 0,
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          currentIndex: currentPageIndex,
+          currentIndex: navigationState.currentPageIndex,
           iconSize: 20,
           elevation: 0,
           backgroundColor: Colors.transparent,
           selectedItemColor: theme.colorScheme.primary,
           onTap: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
+            navigationState.setPageIndex(index);
           },
           items: [
             BottomNavigationBarItem(

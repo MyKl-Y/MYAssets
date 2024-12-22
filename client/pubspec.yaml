@@ -16,6 +16,8 @@ dependencies:
 
   flutter_secure_storage: ^9.2.2  # For secure storage (JWT Tokens)
 
+  provider: ^6.1.2                # For sharing states (Navigation State)
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

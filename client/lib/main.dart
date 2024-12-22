@@ -9,15 +9,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:m_y_assets/widgets/mobile_container.dart';
-import 'package:m_y_assets/widgets/desktop_container.dart';
-import 'package:m_y_assets/widgets/web_container.dart';
+import 'package:provider/provider.dart';
 
+import './widgets/mobile_container.dart';
+import './widgets/desktop_container.dart';
+import './widgets/web_container.dart';
 
 import 'screens/login_screen.dart';
 //import 'screens/home_screen.dart';
 
 import 'utils/token_manager.dart';
+import './utils/nav_state_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +40,12 @@ void main() async {
       log('Running on iOS!');
     } 
   }
-  runApp(MYAssetsApp(isLoggedIn: token != null));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => NavigationState(),
+      child: MYAssetsApp(isLoggedIn: token != null),
+    ),
+  );
 }
 
 class MYAssetsApp extends StatelessWidget {
