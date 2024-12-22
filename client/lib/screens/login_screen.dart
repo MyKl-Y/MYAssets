@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:m_y_assets/widgets/mobile_container.dart';
-import 'package:m_y_assets/widgets/web_and_desktop_container.dart';
+import 'package:m_y_assets/widgets/desktop_container.dart';
 
 import 'register_screen.dart';
 
@@ -32,12 +32,12 @@ class LoginScreen extends StatelessWidget {
     );
     if (success) {
       if (kIsWeb) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => WebAndDesktopContainer()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => DesktopContainer()));
       } else {
         if (Platform.isAndroid || Platform.isIOS) {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MobileContainer()));
         } else {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => WebAndDesktopContainer()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => DesktopContainer()));
         }
       }
     } else {

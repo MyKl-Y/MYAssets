@@ -12,14 +12,14 @@ import '../screens/add_screen.dart';
 import '../screens/transactions_screen.dart';
 import '../screens/account_screen.dart';
 
-class WebAndDesktopContainer extends StatefulWidget {
-  const WebAndDesktopContainer({super.key});
+class DesktopContainer extends StatefulWidget {
+  const DesktopContainer({super.key});
 
   @override
-  State<WebAndDesktopContainer> createState() => _WebAndDesktopContainerState();
+  State<DesktopContainer> createState() => _DesktopContainerState();
 }
 
-class _WebAndDesktopContainerState extends State<WebAndDesktopContainer> with TickerProviderStateMixin {
+class _DesktopContainerState extends State<DesktopContainer> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override 

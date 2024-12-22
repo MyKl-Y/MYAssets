@@ -10,7 +10,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:m_y_assets/widgets/mobile_container.dart';
-import 'package:m_y_assets/widgets/web_and_desktop_container.dart';
+import 'package:m_y_assets/widgets/desktop_container.dart';
 
 import 'screens/login_screen.dart';
 //import 'screens/home_screen.dart';
@@ -50,7 +50,7 @@ class MYAssetsApp extends StatelessWidget {
       return MaterialApp(
           title: 'M.Y.Assets - Personal Finance App',
           //theme: ThemeData(useMaterial3: true),
-          home: isLoggedIn ? WebAndDesktopContainer() : LoginScreen(),
+          home: isLoggedIn ? DesktopContainer() : LoginScreen(),
         );
     } else {
       if (Platform.isIOS || Platform.isAndroid) {
@@ -63,7 +63,7 @@ class MYAssetsApp extends StatelessWidget {
         return MaterialApp(
           title: 'M.Y.Assets - Personal Finance App',
           //theme: ThemeData(useMaterial3: true),
-          home: isLoggedIn ? WebAndDesktopContainer() : LoginScreen(),
+          home: isLoggedIn ? DesktopContainer() : LoginScreen(),
         );
       }
     }
