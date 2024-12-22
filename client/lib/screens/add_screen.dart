@@ -97,7 +97,6 @@ class _AddScreenState extends State<AddScreen> {
       //setState(() {
         accountNames = accounts.map<String>((account) => account['name'] as String).toList();
       //});
-      print(accountNames);
     } catch (e) {
       print("Error fetching accounts: $e");
       setState(() {
