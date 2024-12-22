@@ -94,7 +94,7 @@ class _AddScreenState extends State<AddScreen> {
         double.parse(accountBalanceController.text)
       );
 
-      print(response);
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -110,7 +110,6 @@ class _AddScreenState extends State<AddScreen> {
 
   void _addTransaction(BuildContext context) async {
     try {
-      print(DateTime.parse("2000-11-11"));
       DateTime transactionTimestamp = DateTime.parse(transactionTimestampController.text);
       String formattedTimestamp = transactionTimestamp.toIso8601String();
 
@@ -124,7 +123,7 @@ class _AddScreenState extends State<AddScreen> {
         formattedTimestamp
       );
 
-      print(response);
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

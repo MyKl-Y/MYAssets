@@ -61,7 +61,6 @@ def add_transaction():
     timestamp = datetime.fromisoformat(data['timestamp'])
 
     new_transaction = Transaction(
-        user_id = user_id,
         amount = amount,
         description = description,
         category = category,
@@ -74,9 +73,9 @@ def add_transaction():
 
     account_to_change = Account.query.filter_by(name=account, user_id=user_id).first()
 
-    if type == 'income':
+    if type == 'Income':
         account_to_change.balance += float(amount)
-    elif type == 'expense':
+    elif type == 'Expense':
         account_to_change.balance -= float(amount)
 
     db.session.commit()
@@ -88,7 +87,13 @@ def add_transaction():
 @jwt_required()
 def get_transactions():
     user_id = get_jwt_identity()
-    transactions = Transaction.query.filter_by(user_id=user_id).all()
+
+    accounts = Account.query.filter_by(user_id=user_id).all()
+    acct_names = []
+    for acct in accounts:
+        acct_names.append(acct.to_dict()['name'])
+
+    transactions = Transaction.query.filter(Transaction.account.in_(acct_names)).all()
     return jsonify([t.to_dict() for t in transactions])
 
 # Add Account

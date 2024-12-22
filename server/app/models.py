@@ -54,13 +54,13 @@ class Account(db.Model):
 
 class Transaction(db.Model):
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    #user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     amount = Column(Float, nullable=False)
     description = Column(String(256))
     category = Column(String(64), nullable=False)
-    account = Column(String(64))
+    account = Column(String(64), ForeignKey('account.id'), nullable=False)
     type = Column(String(64), nullable=False)
-    apy = Column(Float)
+    apy = Column(Float, default=0)
     timestamp = Column(DateTime, index=True, default=datetime.now(timezone.utc))
 
     def __init__(self, **kwargs):
@@ -72,7 +72,6 @@ class Transaction(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'user_id': self.user_id,
             'amount': self.amount,
             'category': self.category,
             'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
