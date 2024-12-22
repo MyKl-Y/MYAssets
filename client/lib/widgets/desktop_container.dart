@@ -41,7 +41,15 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
     // Update NavigationState when the tab changes
     _tabController.addListener(() {
       if (_tabController.indexIsChanging || _tabController.index != navigationState.currentPageIndex) {
-        navigationState.setPageIndex(_tabController.index);
+        if (_tabController.index == 2) {
+          // Show the dialog when "Add" tab is selected
+          AddScreen.showAddDialog(context);
+          navigationState.setPageIndex(0); // Reset to the "Home" tab after dialog
+          _tabController.animateTo(0); // Animate back to "Home" tab
+          navigationState.setPageIndex(_tabController.index);
+        } else if (_tabController.indexIsChanging || _tabController.index != navigationState.currentPageIndex) {
+          navigationState.setPageIndex(_tabController.index);
+        }
       }
     });
   }

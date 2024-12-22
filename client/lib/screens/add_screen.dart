@@ -5,6 +5,9 @@ UI Screen: Add Screen
 */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../utils/nav_state_manager.dart';
 
 import '../widgets/form_input.dart';
 import '../widgets/form_dropdown.dart';
@@ -12,9 +15,51 @@ import '../widgets/form.dart';
 
 import '../services/api_service.dart';
 
+import '../screens/transactions_screen.dart';
+
 class AddScreen extends StatefulWidget {
   @override
   State<AddScreen> createState() => _AddScreenState();
+
+  static void showAddDialog(BuildContext context) {
+    _AddScreenState()._loadAccounts();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Add New Item',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                    _AddScreenState()._showAddAccountForm(context);
+                  },
+                  child: const Text('Add Account'),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                    _AddScreenState()._showAddTransactionForm(context);
+                  },
+                  child: const Text('Add Transaction'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _AddScreenState extends State<AddScreen> {
@@ -49,9 +94,10 @@ class _AddScreenState extends State<AddScreen> {
   Future<void> _loadAccounts() async {
     try {
       List<dynamic> accounts = await apiService.getAccounts();
-      setState(() {
+      //setState(() {
         accountNames = accounts.map<String>((account) => account['name'] as String).toList();
-      });
+      //});
+      print(accountNames);
     } catch (e) {
       print("Error fetching accounts: $e");
       setState(() {
@@ -143,6 +189,128 @@ class _AddScreenState extends State<AddScreen> {
         );
       }
     }
+  }
+
+  void _showAddAccountForm(BuildContext context) {
+    initState();
+
+    showDialog<void>(
+      context: context,
+      builder: (context) => Dialog( 
+        child: BasicForm(
+          [FormInput(
+            type:'name', 
+            controller: accountNameController, 
+            hint: 'Savings', 
+            label: 'Account Name', 
+            icon: Icons.account_box, 
+            password: false, 
+            keyboardType: TextInputType.text
+          ),
+          FormInput(
+            type:'description', 
+            controller: accountDescriptionController, 
+            hint: 'Well\'s Fargo Bank', 
+            label: 'Account Description', 
+            icon: Icons.account_balance, 
+            password: false, 
+            keyboardType: TextInputType.text
+          ),
+          FormDropdown(
+            items: ['Savings', 'Checking'],
+            controller: accountTypeController,
+            hint: 'i.e. Savings, Checking',
+            label: 'Account Type',
+            icon: Icons.savings,
+            hasDefaultValue: false,
+          ),
+          FormInput(
+            type:'balance', 
+            controller: accountBalanceController, 
+            hint: '0', 
+            label: 'Account Balance', 
+            icon: Icons.money, 
+            password: false, 
+            keyboardType: TextInputType.number
+          ),], 
+          'Add New Account', 
+          'Add', 
+          () { _addAccount(context); }
+        )
+      )
+    );
+  }
+
+  void _showAddTransactionForm(BuildContext context) {
+    initState();
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog( 
+        child: BasicForm(
+          [FormInput(
+            type:'amount', 
+            controller: transactionAmountController, 
+            hint: '0.00', 
+            label: 'Transaction Amount', 
+            icon: Icons.money, 
+            password: false, 
+            keyboardType: TextInputType.number
+          ),
+          FormInput(
+            type:'description', 
+            controller: transactionDescriptionController, 
+            hint: 'Amazon Subscription', 
+            label: 'Transaction Description', 
+            icon: Icons.description, 
+            password: false, 
+            keyboardType: TextInputType.text
+          ),
+          FormDropdown(
+            controller: transactionAccountController, 
+            hint: 'Savings', 
+            label: 'Transaction Account', 
+            icon: Icons.account_balance, 
+            items: accountNames,
+            hasDefaultValue: false,
+          ),
+          FormDropdown(
+            controller: transactionTypeController, 
+            hint: 'i.e., Income, Expense', 
+            label: 'Transaction Type', 
+            icon: Icons.attach_money, 
+            items: ['Income', 'Expense'],
+            hasDefaultValue: true,
+            onChanged: (String? value) {
+              if (value != null) {
+                _updateCategories(value); // Call the method to update categories
+              }
+            },
+          ),
+          FormDropdown(
+            key: categoryDropdownKey, // Force widget rebuild on list update
+            controller: transactionCategoryController, 
+            hint: 'e.g. Childcare, Subscription, etc.', 
+            label: 'Transaction Category', 
+            icon: Icons.category, 
+            items: transactionCategoryItems,
+            hasDefaultValue: true,
+          ),
+          FormInput(
+            type:'timestamp', 
+            controller: transactionTimestampController, 
+            hint: 'Date', 
+            label: 'Transaction Date', 
+            icon: Icons.date_range, 
+            password: false, 
+            keyboardType: TextInputType.datetime
+          ),], 
+          'Add New Transaction', 
+          'Add', 
+          () { _addTransaction(context); }
+        )
+      )
+    );
   }
 
   @override

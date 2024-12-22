@@ -115,7 +115,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        Text("${account['description'] ?? ''} ${account['type']} Account"),
+                        Text("${account['name']} ${account['description'] ?? ''} ${account['type']} Account"),
                         SizedBox(
                           height: transactionRows.length * 20,
                           child: ListView.builder(
@@ -157,7 +157,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        Text("${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"),
+                        Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"),
                         Table(
                           border: TableBorder.all(),
                           children: createTable(account['name']),

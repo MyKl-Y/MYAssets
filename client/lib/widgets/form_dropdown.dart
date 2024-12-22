@@ -41,6 +41,7 @@ class FormDropdownState extends State<FormDropdown> {
     dropdownValue = widget.hasDefaultValue && currentItems.isNotEmpty
         ? currentItems.first
         : null;
+    widget.controller.text = dropdownValue ?? '';
   }
 
   void resetItems(List<String> newItems) {

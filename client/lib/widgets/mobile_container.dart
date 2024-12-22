@@ -40,7 +40,8 @@ class MobileContainer extends StatelessWidget {
         shape: CircleBorder(),
         backgroundColor: theme.colorScheme.primary,
         onPressed: () {
-          navigationState.setPageIndex(2);
+          AddScreen.showAddDialog(context);
+          navigationState.setPageIndex(0);
         },
         child: Icon(Icons.add_circle, color: theme.colorScheme.surface),
       ),
