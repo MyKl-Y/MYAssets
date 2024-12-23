@@ -182,7 +182,7 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                         ),  
                         title: Text('Add'),
                         onTap: () {
-                          AddScreen.showAddDialog(context);
+                          AddScreen.showAddDialog(context, shiftRight: 240.5);
                           navigationState.setPageIndex(0);
                         },
                       ),

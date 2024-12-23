@@ -16,13 +16,14 @@ class AddScreen extends StatefulWidget {
   @override
   State<AddScreen> createState() => _AddScreenState();
 
-  static void showAddDialog(BuildContext context) {
+  static void showAddDialog(BuildContext context, {double shiftRight = 0}) {
     _AddScreenState()._loadAccounts();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          insetPadding: EdgeInsets.only(left: shiftRight),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
