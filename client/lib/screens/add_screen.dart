@@ -5,17 +5,12 @@ UI Screen: Add Screen
 */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../utils/nav_state_manager.dart';
 
 import '../widgets/form_input.dart';
 import '../widgets/form_dropdown.dart';
 import '../widgets/form.dart';
 
 import '../services/api_service.dart';
-
-import '../screens/transactions_screen.dart';
 
 class AddScreen extends StatefulWidget {
   @override
@@ -314,7 +309,8 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SizedBox.square(dimension: 0,);
+    /* Scaffold(
       appBar: AppBar(title: Text('Add')),
       body: Column( 
         children: [
@@ -442,6 +438,6 @@ class _AddScreenState extends State<AddScreen> {
           )
         ]
       )
-    );
+    ); */
   }
 }

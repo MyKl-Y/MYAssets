@@ -23,42 +23,7 @@ class DesktopContainer extends StatefulWidget {
 }
 
 class _DesktopContainerState extends State<DesktopContainer> with TickerProviderStateMixin {
-  late TabController _tabController;
   late NavigationState navigationState;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    navigationState = Provider.of<NavigationState>(context);
-
-    // Initialize TabController with the shared navigation state
-    _tabController = TabController(
-      length: 5,
-      vsync: this,
-      initialIndex: navigationState.currentPageIndex,
-    );
-
-    // Update NavigationState when the tab changes
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging || _tabController.index != navigationState.currentPageIndex) {
-        if (_tabController.index == 2) {
-          // Show the dialog when "Add" tab is selected
-          AddScreen.showAddDialog(context);
-          navigationState.setPageIndex(0); // Reset to the "Home" tab after dialog
-          _tabController.animateTo(0); // Animate back to "Home" tab
-          navigationState.setPageIndex(_tabController.index);
-        } else if (_tabController.indexIsChanging || _tabController.index != navigationState.currentPageIndex) {
-          navigationState.setPageIndex(_tabController.index);
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,51 +31,197 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
 
     final navigationState = Provider.of<NavigationState>(context);
 
-    // Update TabController index if NavigationState changes externally
-    if (_tabController.index != navigationState.currentPageIndex) {
-      _tabController.animateTo(navigationState.currentPageIndex);
+    Widget getView(int index) {
+      switch (index) {
+        case 0:
+          return HomeScreen();
+        case 1:
+          return DashboardScreen();
+        case 2:
+          return AddScreen();
+        case 3:
+          return TransactionsScreen();
+        case 4: 
+          return AccountScreen();
+        default:
+          return HomeScreen();
+      }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.colorScheme.inversePrimary,
-        title: TabBar(
-          controller: _tabController,
-          indicatorColor: theme.colorScheme.primary,
-          tabs: const <Widget>[
-            Tab(
-              icon: Icon(Icons.home), 
-              text: 'Home',
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 1280) {
+          // Smaller screens (Tablet)
+          final ancestorScaffold = Scaffold.maybeOf(context);
+
+          final hasDrawer = ancestorScaffold != null && ancestorScaffold.hasDrawer;
+
+          return Scaffold(
+            drawer: Container(
+              width: 200,
+              color: theme.colorScheme.surface,
+              child: ListView(
+                children: [
+                  ListTile(title: Text('Menu')),
+                  ListTile(
+                    leading: Icon(
+                      Icons.home, 
+                      color: navigationState.currentPageIndex == 0 ? theme.colorScheme.primary : null
+                    ), 
+                    title: Text('Home'),
+                    onTap: () {
+                      navigationState.setPageIndex(0);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.dashboard, 
+                      color: navigationState.currentPageIndex == 1 
+                        ? theme.colorScheme.primary 
+                        : null
+                    ), 
+                    title: Text('Dashboard'),
+                    onTap: () {
+                      navigationState.setPageIndex(1);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.add_circle, 
+                      color: navigationState.currentPageIndex == 2 
+                        ? theme.colorScheme.primary 
+                        : null
+                    ),  
+                    title: Text('Add'),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      AddScreen.showAddDialog(context);
+                      navigationState.setPageIndex(0);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.paid, 
+                      color: navigationState.currentPageIndex == 3 
+                        ? theme.colorScheme.primary 
+                        : null
+                    ),  
+                    title: Text('Transactions'),
+                    onTap: () {
+                      navigationState.setPageIndex(3);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.account_circle, 
+                      color: navigationState.currentPageIndex == 4 
+                        ? theme.colorScheme.primary 
+                        : null
+                    ),  
+                    title: Text('Account'),
+                    onTap: () {
+                      navigationState.setPageIndex(4);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
             ),
-            Tab(
-              icon: Icon(Icons.dashboard), 
-              text: 'Dashboard',
+            appBar: AppBar(
+              leading: hasDrawer 
+                ? IconButton(
+                    onPressed: hasDrawer ? () => ancestorScaffold.openDrawer() : null,
+                    icon: Icon(Icons.menu, color: theme.colorScheme.primary,)
+                  )
+                : null,
+                //title: Text('Menu'),
             ),
-            Tab(
-              icon: Icon(Icons.add_circle), 
-              text: 'Add',
-            ),
-            Tab(
-              icon: Icon(Icons.paid), 
-              text: 'Transactions',
-            ),
-            Tab(
-              icon: Icon(Icons.account_circle), 
-              text: 'Account',
-            ),
-          ],
-        )
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          HomeScreen(),
-          DashboardScreen(),
-          AddScreen(),
-          TransactionsScreen(),
-          AccountScreen()
-        ]
-      ),
+            body: getView(navigationState.currentPageIndex),
+          );
+        } else {
+          // Large screens (Desktop)
+          return Row(
+            children: [
+              SizedBox(
+                width: 240,
+                child: Scaffold(
+                  appBar: AppBar(title: Text('Menu')),
+                  body: ListView(
+                    children: [
+                      ListTile(
+                        leading: Icon(
+                          Icons.home, 
+                          color: navigationState.currentPageIndex == 0 ? theme.colorScheme.primary : null
+                        ), 
+                        title: Text('Home'),
+                        onTap: () {
+                          navigationState.setPageIndex(0);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.dashboard, 
+                          color: navigationState.currentPageIndex == 1 
+                            ? theme.colorScheme.primary 
+                            : null
+                        ), 
+                        title: Text('Dashboard'),
+                        onTap: () {
+                          navigationState.setPageIndex(1);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.add_circle, 
+                          color: navigationState.currentPageIndex == 2 
+                            ? theme.colorScheme.primary 
+                            : null
+                        ),  
+                        title: Text('Add'),
+                        onTap: () {
+                          AddScreen.showAddDialog(context);
+                          navigationState.setPageIndex(0);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.paid, 
+                          color: navigationState.currentPageIndex == 3 
+                            ? theme.colorScheme.primary 
+                            : null
+                        ),  
+                        title: Text('Transactions'),
+                        onTap: () {
+                          navigationState.setPageIndex(3);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.account_circle, 
+                          color: navigationState.currentPageIndex == 4 
+                            ? theme.colorScheme.primary 
+                            : null
+                        ),  
+                        title: Text('Account'),
+                        onTap: () {
+                          navigationState.setPageIndex(4);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(width: 0.5, color: Colors.black),
+              Expanded(
+                child: getView(navigationState.currentPageIndex),
+              ),
+            ],
+          );
+        }
+      }
     );
   }
 }
