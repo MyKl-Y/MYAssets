@@ -37,7 +37,7 @@ class AddScreen extends StatefulWidget {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context); // Close the dialog
-                    _AddScreenState()._showAddAccountForm(context);
+                    _AddScreenState()._showAddAccountForm(context, shiftRight: shiftRight);
                   },
                   child: const Text('Add Account'),
                 ),
@@ -45,7 +45,7 @@ class AddScreen extends StatefulWidget {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context); // Close the dialog
-                    _AddScreenState()._showAddTransactionForm(context);
+                    _AddScreenState()._showAddTransactionForm(context, shiftRight: shiftRight);
                   },
                   child: const Text('Add Transaction'),
                 ),
@@ -186,12 +186,13 @@ class _AddScreenState extends State<AddScreen> {
     }
   }
 
-  void _showAddAccountForm(BuildContext context) {
+  void _showAddAccountForm(BuildContext context, {double shiftRight = 0}) {
     initState();
 
     showDialog<void>(
       context: context,
       builder: (context) => Dialog( 
+        insetPadding: EdgeInsets.only(left: shiftRight),
         child: BasicForm(
           [FormInput(
             type:'name', 
@@ -236,12 +237,13 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
-  void _showAddTransactionForm(BuildContext context) {
+  void _showAddTransactionForm(BuildContext context, {double shiftRight = 0}) {
     initState();
 
     showDialog(
       context: context,
       builder: (context) => Dialog( 
+        insetPadding: EdgeInsets.only(left: shiftRight),
         child: BasicForm(
           [FormInput(
             type:'amount', 

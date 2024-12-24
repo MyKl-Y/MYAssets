@@ -25,36 +25,33 @@ class _BasicFormState extends State<BasicForm> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Scaffold(
-      appBar: AppBar(
-        title: Text(widget.formName, style: TextStyle(color: Theme.of(context).colorScheme.surface)), 
-        backgroundColor: Theme.of(context).primaryColor,
-        iconTheme: Theme.of(context).primaryIconTheme,
+    return Card(
+      color: Theme.of(context).colorScheme.surface,
+      elevation: 5, 
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25.0),
       ),
-      body: Center( 
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox(
-            width: (MediaQuery.of(context).size.width / 2),
-            child: Card(
-              elevation: 5, 
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0), 
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ...widget.children, 
-                      FormSubmitButton(widget.submitButtonText, widget.submitButtonCallback, _formKey)
-                    ],
-                  ),
-                ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0), 
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width > 769 
+              ? MediaQuery.of(context).size.width * (3 / 8)
+              : MediaQuery.of(context).size.width * (7 / 8),
+            maxHeight: 50 + (widget.children.length * 60) + 50
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(title: Text(widget.formName),),
+            body: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...widget.children, 
+                  FormSubmitButton(widget.submitButtonText, widget.submitButtonCallback, _formKey)
+                ],
               ),
             ),
           ),
