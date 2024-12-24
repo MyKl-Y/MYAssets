@@ -152,9 +152,13 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                   body: ListView(
                     children: [
                       ListTile(
+                        selected: navigationState.currentPageIndex == 0,
+                        selectedTileColor: theme.colorScheme.inversePrimary,
                         leading: Icon(
                           Icons.home, 
-                          color: navigationState.currentPageIndex == 0 ? theme.colorScheme.primary : null
+                          color: navigationState.currentPageIndex == 0 
+                            ? theme.colorScheme.primary 
+                            : null
                         ), 
                         title: Text('Home'),
                         onTap: () {
@@ -162,6 +166,8 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                         },
                       ),
                       ListTile(
+                        selected: navigationState.currentPageIndex == 1,
+                        selectedTileColor: theme.colorScheme.inversePrimary,
                         leading: Icon(
                           Icons.dashboard, 
                           color: navigationState.currentPageIndex == 1 
@@ -174,6 +180,8 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                         },
                       ),
                       ListTile(
+                        selected: navigationState.currentPageIndex == 2,
+                        selectedTileColor: theme.colorScheme.inversePrimary,
                         leading: Icon(
                           Icons.add_circle, 
                           color: navigationState.currentPageIndex == 2 
@@ -187,6 +195,8 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                         },
                       ),
                       ListTile(
+                        selected: navigationState.currentPageIndex == 3,
+                        selectedTileColor: theme.colorScheme.inversePrimary,
                         leading: Icon(
                           Icons.paid, 
                           color: navigationState.currentPageIndex == 3 
@@ -199,6 +209,8 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                         },
                       ),
                       ListTile(
+                        selected: navigationState.currentPageIndex == 4,
+                        selectedTileColor: theme.colorScheme.inversePrimary,
                         leading: Icon(
                           Icons.account_circle, 
                           color: navigationState.currentPageIndex == 4 
