@@ -145,4 +145,20 @@ class ApiService {
       throw Exception('Failed to load transactions');
     }
   }
+
+  // Fetch Transactions
+  Future<dynamic> getUser() async {
+    final response = await _authenticatedRequest((accessToken) {
+      return http.get(
+        Uri.parse('$baseUrl/user'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load transactions');
+    }
+  }
 }

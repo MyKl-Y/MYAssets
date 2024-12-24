@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 import '../utils/token_manager.dart';
 
+import '../services/api_service.dart';
+
 import 'login_screen.dart';
 
 void _logout(BuildContext context) async {
@@ -28,16 +30,90 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  final ApiService apiService = ApiService();
+  Map<String, dynamic>? user;
 
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+
+  void fetchUser() async {
+    try {
+      final data = await apiService.getUser();
+      setState(() => user = data);
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Account')),
-      body: Center(
-        child: 
-          ElevatedButton(onPressed: () { _logout(context); }, child: Text('Log out'))
-      )
+      //appBar: AppBar(title: Text('Account')),
+      body: Container(
+        color: Theme.of(context).colorScheme.inversePrimary,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      width: 2, 
+                      color: Theme.of(context).colorScheme.surface
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.mood,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 50,
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${user != null ? user!['username'] : 'Not Logged In'}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 40
+                      ),
+                    ),
+                    Text(
+                      "${user != null ? user!['email'] : 'Not Logged In'}",
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20), topRight: Radius.circular(20)
+                  ),
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                padding: EdgeInsets.all(20),
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(),
+                    ElevatedButton(onPressed: () { _logout(context); }, child: Text('Log out')),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
