@@ -104,8 +104,16 @@ class _AccountScreenState extends State<AccountScreen> {
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: MediaQuery.of(context).size.width < 769 
+                    ? CrossAxisAlignment.end 
+                    : CrossAxisAlignment.center,
                   children: [
-                    Container(),
+                    Expanded(
+                      child: SizedBox( 
+                        width: MediaQuery.of(context).size.width,
+                        child: Text('Test')
+                      ),
+                    ),
                     ElevatedButton(onPressed: () { _logout(context); }, child: Text('Log out')),
                   ],
                 ),
