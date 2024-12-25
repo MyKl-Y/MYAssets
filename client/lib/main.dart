@@ -11,15 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
-import './widgets/mobile_container.dart';
-import './widgets/desktop_container.dart';
-import './widgets/web_container.dart';
+import 'widgets/mobile_container.dart';
+import 'widgets/desktop_container.dart';
+import 'widgets/web_container.dart';
 
 import 'screens/login_screen.dart';
-//import 'screens/home_screen.dart';
 
 import 'utils/token_manager.dart';
-import './utils/nav_state_manager.dart';
+import 'utils/nav_state_manager.dart';
+import 'utils/data_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,8 +41,16 @@ void main() async {
     } 
   }
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => NavigationState(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => DataProvider()..fetchAccounts()..fetchTransactions()..fetchUser(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NavigationState(),
+        ),
+      ],
       child: MYAssetsApp(isLoggedIn: token != null),
     ),
   );

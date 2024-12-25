@@ -5,6 +5,8 @@ UI Screen: Transactions Screen
 */
 
 import 'package:flutter/material.dart';
+import 'package:m_y_assets/utils/data_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../services/api_service.dart';
 
@@ -15,33 +17,35 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
   final ApiService apiService = ApiService();
-  List<dynamic> accounts = [];
-  List<dynamic> transactions = [];
+  //List<dynamic> accounts = [];
+  //List<dynamic> transactions = [];
   List<Text> accountRows = [];
 
   @override
   void initState() {
     super.initState();
-    fetchAccounts();
-    fetchTransactions();
+    // fetchAccounts();
+    // fetchTransactions();
+    Future.microtask(() => context.read<DataProvider>().fetchAccounts());
+    Future.microtask(() => context.read<DataProvider>().fetchTransactions());
   }
 
-  void createAccounts() {
+  void createAccounts(List<dynamic> accounts) {
     for (var account in accounts) {
       accountRows.add(Text("${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"));
     }
   }
 
-  void fetchAccounts() async {
+  /* void fetchAccounts() async {
     try {
       final data = await apiService.getAccounts();
       setState(() => accounts = data);
     } catch (e) {
       print('Error: $e');
     }
-  }
+  } */
 
-  List<dynamic> createTransactions(String account) {
+  List<dynamic> createTransactions(String account, List<dynamic> transactions) {
     List<dynamic> transactionRows = [];
 
     for (var transaction in transactions) {
@@ -53,7 +57,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return transactionRows;
   }
 
-  List<TableRow> createTable(String account) {
+  List<TableRow> createTable(String account, List<dynamic> transactions) {
     List<TableRow> transactionRows = [TableRow(
       decoration: BoxDecoration(color: Colors.grey),
       children: [
@@ -85,18 +89,22 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return transactionRows;
   }
 
-  void fetchTransactions() async {
+  /* void fetchTransactions() async {
     try {
       final data = await apiService.getTransactions();
       setState(() => transactions = data);
     } catch (e) {
       print('Error: $e');
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
     dynamic account;
+
+    final accounts = context.watch<DataProvider>().accounts;
+    final transactions = context.watch<DataProvider>().transactions;
+    
     return Scaffold(
       appBar: AppBar(title: Text('Accounts')),
       body: LayoutBuilder(
@@ -108,7 +116,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               itemBuilder: (context, index) {
                 account = accounts[index];
 
-                List<dynamic> transactionRows = createTransactions(account['name']);
+                List<dynamic> transactionRows = createTransactions(account['name'], transactions);
 
                 return Card(
                   child: Padding(
@@ -160,7 +168,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"),
                         Table(
                           border: TableBorder.all(),
-                          children: createTable(account['name']),
+                          children: createTable(account['name'], transactions),
                         ),
                       ]
                     )

@@ -5,7 +5,9 @@ API Service: Handles backend communication
 */
 
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import '../utils/token_manager.dart';
 
 class ApiService {
@@ -49,7 +51,11 @@ class ApiService {
       }),
     );
 
-    return jsonDecode(response.body);
+    if (response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to register user');
+    }
   }
 
   // User Login

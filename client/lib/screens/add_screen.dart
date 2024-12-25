@@ -5,6 +5,7 @@ UI Screen: Add Screen
 */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/form_input.dart';
 import '../widgets/form_dropdown.dart';
@@ -12,12 +13,14 @@ import '../widgets/form.dart';
 
 import '../services/api_service.dart';
 
+import '../utils/data_provider.dart';
+
 class AddScreen extends StatefulWidget {
   @override
   State<AddScreen> createState() => _AddScreenState();
 
   static void showAddDialog(BuildContext context, {double shiftRight = 0}) {
-    _AddScreenState()._loadAccounts();
+    //_AddScreenState()._loadAccounts();
 
     showDialog(
       context: context,
@@ -75,16 +78,16 @@ class _AddScreenState extends State<AddScreen> {
   final TextEditingController transactionTypeController = TextEditingController();
   final TextEditingController transactionTimestampController = TextEditingController();
 
-  List<String> accountNames = [];
+  //List<String> accountNames = [];
   List<String> transactionCategoryItems = [
     'Other',
     'Salary', 'Gift', 'Interest',
   ];
   
-  @override 
+  /* @override 
   void initState() {
     super.initState();
-    _loadAccounts();
+    //_loadAccounts();
   }
 
   Future<void> _loadAccounts() async {
@@ -99,7 +102,7 @@ class _AddScreenState extends State<AddScreen> {
         accountNames = [];
       });
     }
-  }
+  } */
 
   void _updateCategories(String selectedType) {
     List<String> newCategories;
@@ -136,6 +139,10 @@ class _AddScreenState extends State<AddScreen> {
       );
 
       if (context.mounted) {
+        await context.read<DataProvider>().refreshAccounts();
+      }
+
+      if (context.mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
@@ -158,7 +165,6 @@ class _AddScreenState extends State<AddScreen> {
       DateTime transactionTimestamp = DateTime.parse(transactionTimestampController.text);
       String formattedTimestamp = transactionTimestamp.toIso8601String();
 
-
       await apiService.addTransaction(
         double.parse(transactionAmountController.text),
         transactionDescriptionController.text,
@@ -167,6 +173,10 @@ class _AddScreenState extends State<AddScreen> {
         transactionTypeController.text,
         formattedTimestamp
       );
+
+      if (context.mounted) {
+        await context.read<DataProvider>().refreshTransactions();
+      }
 
       if (context.mounted) {
         Navigator.pop(context);
@@ -238,7 +248,7 @@ class _AddScreenState extends State<AddScreen> {
   }
 
   void _showAddTransactionForm(BuildContext context, {double shiftRight = 0}) {
-    initState();
+    //initState();
 
     showDialog(
       context: context,
@@ -268,7 +278,7 @@ class _AddScreenState extends State<AddScreen> {
             hint: 'Savings', 
             label: 'Transaction Account', 
             icon: Icons.account_balance, 
-            items: accountNames,
+            items: context.watch<DataProvider>().accountNames,
             hasDefaultValue: false,
           ),
           FormDropdown(

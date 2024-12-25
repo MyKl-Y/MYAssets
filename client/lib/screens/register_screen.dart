@@ -5,11 +5,14 @@ UI Screen: Register Screen
 */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../services/api_service.dart';
 
 import '../widgets/form_input.dart';
 import '../widgets/form.dart';
+
+import '../utils/data_provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   final ApiService apiService = ApiService();
@@ -29,6 +32,9 @@ class RegisterScreen extends StatelessWidget {
       final response = await apiService.registerUser(username, email, password);
       if (!(response['message'].toString().contains('Username already exists')) && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response['message'] ?? 'Registration successful!')));
+        if (context.mounted) {
+          await context.watch<DataProvider>().refreshUser();
+        }
         Navigator.pop(context); // Navigate back to login screen
       } else {
         throw Exception(response['message']);

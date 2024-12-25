@@ -5,8 +5,10 @@ UI Screen: Account Screen
 */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/token_manager.dart';
+import '../utils/data_provider.dart';
 
 import '../services/api_service.dart';
 
@@ -31,25 +33,28 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   final ApiService apiService = ApiService();
-  Map<String, dynamic>? user;
+  //Map<String, dynamic>? user;
 
   @override
   void initState() {
     super.initState();
-    fetchUser();
+    //fetchUser();
+    Future.microtask(() => context.read<DataProvider>().fetchUser());
   }
 
-  void fetchUser() async {
+  /* void fetchUser() async {
     try {
       final data = await apiService.getUser();
       setState(() => user = data);
     } catch (e) {
       print('Error: $e');
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<DataProvider>().user;
+
     return Scaffold(
       //appBar: AppBar(title: Text('Account')),
       body: Container(
@@ -79,14 +84,14 @@ class _AccountScreenState extends State<AccountScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${user != null ? user!['username'] : 'Not Logged In'}",
+                      "${user['username']}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 40
                       ),
                     ),
                     Text(
-                      "${user != null ? user!['email'] : 'Not Logged In'}",
+                      "${user['email']}",
                     ),
                   ],
                 ),
