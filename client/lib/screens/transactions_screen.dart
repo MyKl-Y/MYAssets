@@ -59,28 +59,97 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   List<TableRow> createTable(String account, List<dynamic> transactions) {
     List<TableRow> transactionRows = [TableRow(
-      decoration: BoxDecoration(color: Colors.grey),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      ),
       children: [
-        Text('Timestamp', style: TextStyle(color: Colors.white)),
-        Text('Amount', style: TextStyle(color: Colors.white)),
-        Text('Description', style: TextStyle(color: Colors.white)),
-        Text('Type', style: TextStyle(color: Colors.white)),
-        Text('Category', style: TextStyle(color: Colors.white)),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0), 
+          child: Text(
+            'Timestamp', 
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+            ), 
+            textAlign: TextAlign.center,
+          )
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0), 
+          child: Text(
+            'Amount', 
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+            ), 
+            textAlign: TextAlign.center,
+          )
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0), 
+          child: Text(
+            'Description', 
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+            ), 
+            textAlign: TextAlign.center,
+          )
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0), 
+          child: Text(
+            'Type', 
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+            ), 
+            textAlign: TextAlign.center,
+          )
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0), 
+          child: Text(
+            'Category', 
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+            ), 
+            textAlign: TextAlign.center,
+          )
+        ),
       ]
     )];
 
-    for (var transaction in transactions) {
+    for (var (index, transaction) in transactions.indexed) {
       if (transaction['account'] == account) {
         transactionRows.add(TableRow(
           decoration: BoxDecoration(
-            color: transaction['type'] == 'Income' ? Colors.lightGreen : Colors.red
+            color: (index % 2) == 0 
+              ? Theme.of(context).colorScheme.surface 
+              : Theme.of(context).colorScheme.inversePrimary,
+            borderRadius: index == transactions.length - 1 
+              ? BorderRadius.vertical(bottom: Radius.circular(8))
+              : null
           ),
           children: [
-            Text(transaction['timestamp']),
-            Text('${transaction['amount']}'),
-            Text(transaction['description']),
-            Text(transaction['type']),
-            Text(transaction['category'])
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0), 
+              child: Text(transaction['timestamp'], textAlign: TextAlign.center,)
+            ),
+            Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(
+              (transaction['amount'] as double).toStringAsFixed(2), 
+              style: TextStyle(
+                color: transaction['type'] == 'Income' 
+                  ? Colors.green
+                  : Theme.of(context).colorScheme.error,
+                fontWeight: FontWeight.bold
+              ), textAlign: TextAlign.center,
+            )),
+            Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(transaction['description'], textAlign: TextAlign.center,)),
+            Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(transaction['type'], textAlign: TextAlign.center,)),
+            Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(transaction['category'], textAlign: TextAlign.center,))
           ]
         ));
       }
@@ -137,7 +206,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                   style: TextStyle(
                                     color: transaction['type'] == 'Income' 
                                       ? Colors.green
-                                      : Colors.red
+                                      : Colors.red,
+                                    fontWeight: FontWeight.bold
                                   ),
                                 );
                               } else {
@@ -167,7 +237,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       children: [
                         Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"),
                         Table(
-                          border: TableBorder.all(),
+                          border: TableBorder.all(
+                            color: Theme.of(context).colorScheme.inverseSurface,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
                           children: createTable(account['name'], transactions),
                         ),
                       ]
