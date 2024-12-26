@@ -17,8 +17,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Dashboard')),
-      body: Center(child: Text('Dashboard'))
+      appBar: AppBar(title: Text('Insights')),
+      body: Column(
+        children: [
+          Container(
+            // Transaction History Line Graph
+          ),
+          Container(
+            // Transaction Categories Bar Graph
+          ),
+        ],
+      ),
     );
   }
 }
