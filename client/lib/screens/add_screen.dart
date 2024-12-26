@@ -14,13 +14,17 @@ import '../widgets/form.dart';
 import '../services/api_service.dart';
 
 import '../utils/data_provider.dart';
+import '../utils/nav_state_manager.dart';
 
 class AddScreen extends StatefulWidget {
+  
   @override
   State<AddScreen> createState() => _AddScreenState();
 
-  static void showAddDialog(BuildContext context, {double shiftRight = 0}) {
+  static void showAddDialog(BuildContext context, NavigationState navigationState, {double shiftRight = 0}) {
     //_AddScreenState()._loadAccounts();
+
+    bool exitedDialog = true;
 
     showDialog(
       context: context,
@@ -39,16 +43,18 @@ class AddScreen extends StatefulWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
+                    exitedDialog = false;
                     Navigator.pop(context); // Close the dialog
-                    _AddScreenState()._showAddAccountForm(context, shiftRight: shiftRight);
+                    _AddScreenState()._showAddAccountForm(context, navigationState, shiftRight: shiftRight);
                   },
                   child: const Text('Add Account'),
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {
+                    exitedDialog = false;
                     Navigator.pop(context); // Close the dialog
-                    _AddScreenState()._showAddTransactionForm(context, shiftRight: shiftRight);
+                    _AddScreenState()._showAddTransactionForm(context, navigationState, shiftRight: shiftRight);
                   },
                   child: const Text('Add Transaction'),
                 ),
@@ -57,7 +63,11 @@ class AddScreen extends StatefulWidget {
           ),
         );
       },
-    );
+    ).then((_) {
+      if (exitedDialog) {
+        navigationState.setPageIndex(3);
+      }
+    });
   }
 }
 
@@ -196,7 +206,7 @@ class _AddScreenState extends State<AddScreen> {
     }
   }
 
-  void _showAddAccountForm(BuildContext context, {double shiftRight = 0}) {
+  void _showAddAccountForm(BuildContext context, NavigationState navigationState, {double shiftRight = 0}) {
     initState();
 
     showDialog<void>(
@@ -244,10 +254,12 @@ class _AddScreenState extends State<AddScreen> {
           () { _addAccount(context); }
         )
       )
-    );
+    ).then((_) {
+      navigationState.setPageIndex(3);
+    });
   }
 
-  void _showAddTransactionForm(BuildContext context, {double shiftRight = 0}) {
+  void _showAddTransactionForm(BuildContext context, NavigationState navigationState, {double shiftRight = 0}) {
     //initState();
 
     showDialog(
@@ -317,7 +329,9 @@ class _AddScreenState extends State<AddScreen> {
           () { _addTransaction(context); }
         )
       )
-    );
+    ).then((_) {
+      navigationState.setPageIndex(3);
+    });
   }
 
   @override
