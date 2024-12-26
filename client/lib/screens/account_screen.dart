@@ -5,6 +5,7 @@ UI Screen: Account Screen
 */
 
 import 'package:flutter/material.dart';
+import 'package:m_y_assets/main.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/token_manager.dart';
@@ -116,7 +117,17 @@ class _AccountScreenState extends State<AccountScreen> {
                     Expanded(
                       child: SizedBox( 
                         width: MediaQuery.of(context).size.width,
-                        child: Text('Test')
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () => MYAssetsApp.of(context).changeTheme(ThemeMode.light),
+                              child: Text('Light')),
+                            ElevatedButton(
+                                onPressed: () => MYAssetsApp.of(context).changeTheme(ThemeMode.dark),
+                                child: Text('Dark')),
+                          ]
+                        )
                       ),
                     ),
                     ElevatedButton(onPressed: () { _logout(context); }, child: Text('Log out')),

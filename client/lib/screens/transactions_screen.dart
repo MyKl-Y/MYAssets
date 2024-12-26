@@ -69,7 +69,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Timestamp', 
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -80,7 +80,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Amount', 
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -91,7 +91,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Description', 
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -102,7 +102,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Type', 
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -113,7 +113,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Category', 
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -143,7 +143,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               style: TextStyle(
                 color: transaction['type'] == 'Income' 
                   ? Colors.green
-                  : Theme.of(context).colorScheme.error,
+                  : Colors.red,
                 fontWeight: FontWeight.bold
               ), textAlign: TextAlign.center,
             )),
@@ -188,11 +188,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 List<dynamic> transactionRows = createTransactions(account['name'], transactions);
 
                 return Card(
+                  margin: EdgeInsets.all(20),
                   child: Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        Text("${account['name']} ${account['description'] ?? ''} ${account['type']} Account"),
+                        Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account"),
                         SizedBox(
                           height: transactionRows.length * 20,
                           child: ListView.builder(
@@ -201,13 +202,44 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                               final transaction = transactionRows[index];
 
                               if (transaction['account'] == account['name']) {
-                                return Text(
-                                  "> ${transaction['amount']}",
-                                  style: TextStyle(
-                                    color: transaction['type'] == 'Income' 
-                                      ? Colors.green
-                                      : Colors.red,
-                                    fontWeight: FontWeight.bold
+                                return Container( 
+                                  decoration: BoxDecoration(
+                                    color: (index % 2) == 0 
+                                      ? Theme.of(context).colorScheme.inversePrimary 
+                                      : null,
+                                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                  child: IntrinsicHeight(
+                                    child: Row(
+                                      spacing: 1,
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Text(
+                                            transaction['timestamp'],
+                                            textAlign: TextAlign.right,
+                                          ),
+                                        ),
+                                        VerticalDivider(
+                                          indent: 3,
+                                          endIndent: 3,
+                                          thickness: 1,
+                                          color: Theme.of(context).colorScheme.inverseSurface,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Text(
+                                            "> ${transaction['amount']}",
+                                            style: TextStyle(
+                                              color: transaction['type'] == 'Income' 
+                                                ? Colors.green
+                                                : Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 );
                               } else {
@@ -231,6 +263,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 account = accounts[index];
 
                 return Card(
+                  margin: EdgeInsets.all(20),
                   child: Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(

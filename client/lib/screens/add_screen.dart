@@ -336,7 +336,7 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.square(dimension: 0,);
+    return Scaffold();
     /* Scaffold(
       appBar: AppBar(title: Text('Add')),
       body: Column( 

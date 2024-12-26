@@ -56,31 +56,53 @@ void main() async {
   );
 }
 
-class MYAssetsApp extends StatelessWidget {
+class MYAssetsApp extends StatefulWidget {
   final bool isLoggedIn;
 
   const MYAssetsApp({required this.isLoggedIn, super.key});
+
+  @override
+  _MYAssetsAppState createState() => _MYAssetsAppState();
+
+  static _MYAssetsAppState of(BuildContext context) =>
+    context.findAncestorStateOfType<_MYAssetsAppState>()!;
+}
+
+class _MYAssetsAppState extends State<MYAssetsApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return MaterialApp(
           title: 'M.Y.Assets - Personal Finance App',
-          //theme: ThemeData(useMaterial3: true),
-          home: isLoggedIn ? WebContainer() : LoginScreen(),
+          theme: ThemeData(useMaterial3: true),
+          darkTheme: ThemeData.dark(),
+          themeMode: _themeMode,
+          home: widget.isLoggedIn ? WebContainer() : LoginScreen(),
         );
     } else {
       if (Platform.isIOS || Platform.isAndroid) {
         return MaterialApp(
           title: 'M.Y.Assets - Personal Finance App',
-          //theme: ThemeData(useMaterial3: true),
-          home: isLoggedIn ? MobileContainer() : LoginScreen(),
+          theme: ThemeData(useMaterial3: true),
+          darkTheme: ThemeData.dark(),
+          themeMode: _themeMode,
+          home: widget.isLoggedIn ? MobileContainer() : LoginScreen(),
         );
       } else {
         return MaterialApp(
           title: 'M.Y.Assets - Personal Finance App',
-          //theme: ThemeData(useMaterial3: true),
-          home: isLoggedIn ? DesktopContainer() : LoginScreen(),
+          theme: ThemeData(useMaterial3: true),
+          darkTheme: ThemeData.dark(),
+          themeMode: _themeMode,
+          home: widget.isLoggedIn ? DesktopContainer() : LoginScreen(),
         );
       }
     }
