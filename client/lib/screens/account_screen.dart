@@ -121,17 +121,17 @@ class _AccountScreenState extends State<AccountScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ElevatedButton(
+                            FilledButton(
                               onPressed: () => MYAssetsApp.of(context).changeTheme(ThemeMode.light),
                               child: Text('Light')),
-                            ElevatedButton(
+                            FilledButton.tonal(
                                 onPressed: () => MYAssetsApp.of(context).changeTheme(ThemeMode.dark),
                                 child: Text('Dark')),
                           ]
                         )
                       ),
                     ),
-                    ElevatedButton(onPressed: () { _logout(context); }, child: Text('Log out')),
+                    FilledButton(onPressed: () { _logout(context); }, child: Text('Log out')),
                   ],
                 ),
               ),

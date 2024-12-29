@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController transactionYearController = TextEditingController();
   final TextEditingController transactionMonthController = TextEditingController();
+  final TextEditingController accountController = TextEditingController();
 
   @override
   void initState() {
@@ -77,6 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final transactionYears = getTransactionYears();
 
     //final transactionMonths = getTransactionMonths(transactionYears[0]);
+
+    final accountNames = ['All', ...context.watch<DataProvider>().accountNames];
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onSurface,
@@ -144,6 +147,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   });
                                 },
                               ),
+                              DropdownMenu<String>(
+                                label: Text('Account'),
+                                controller: accountController,
+                                initialSelection: 'All',
+                                dropdownMenuEntries: accountNames.map((String name) {
+                                  return DropdownMenuEntry<String>(value: name, label: name);
+                                }).toList(),
+                                onSelected: (String? value) {
+                                  setState(() {
+                                    
+                                  });
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -159,19 +175,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                 (
                                   transactionYearController.text == 'All' 
                                   && transactionMonthController.text == 'All'
+                                  && accountController.text == 'All'
                                 )
                                 || (
                                   transaction['timestamp'].toString().split('-')[1] == transactionMonthController.text
                                   && transactionYearController.text == 'All' 
+                                  && accountController.text == 'All'
                                 )
                                 || (
                                     transaction['timestamp'].toString().split('-')[0] == transactionYearController.text
                                     && transactionMonthController.text == 'All'
+                                    && accountController.text == 'All'
                                 ) 
                                 || (
                                     transaction['timestamp'].toString().split('-')[0] == transactionYearController.text
                                     && transaction['timestamp'].toString().split('-')[1] == transactionMonthController.text
+                                    && accountController.text == 'All'
                                 ) 
+                                || (
+                                  transactionYearController.text == 'All' 
+                                  && transactionMonthController.text == 'All'
+                                  && transaction['account'] == accountController.text
+                                )
+                                || (
+                                  transaction['timestamp'].toString().split('-')[1] == transactionMonthController.text
+                                  && transactionYearController.text == 'All' 
+                                  && transaction['account'] == accountController.text
+                                )
+                                || (
+                                    transaction['timestamp'].toString().split('-')[0] == transactionYearController.text
+                                    && transactionMonthController.text == 'All'
+                                    && transaction['account'] == accountController.text
+                                ) 
+                                || (
+                                    transaction['timestamp'].toString().split('-')[0] == transactionYearController.text
+                                    && transaction['timestamp'].toString().split('-')[1] == transactionMonthController.text
+                                    && transaction['account'] == accountController.text
+                                )
                               ) {
                                 return Padding(
                                   padding: EdgeInsets.symmetric(vertical: 10),

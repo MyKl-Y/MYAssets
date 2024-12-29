@@ -308,6 +308,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               itemBuilder: (context, index) {
                 account = accounts[index];
 
+                List<dynamic> transactionRows = createTransactions(account['name'], transactions);
+
                 return Card(
                   margin: EdgeInsets.all(20),
                   child: Padding(
@@ -320,7 +322,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                             color: Theme.of(context).colorScheme.onSurface,
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                           ),
-                          children: createTable(account['name'], transactions),
+                          children: createTable(account['name'], transactionRows),
                         ),
                       ]
                     )
