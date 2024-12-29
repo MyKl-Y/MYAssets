@@ -1,0 +1,19 @@
+# TODO
+- [ ] Add Endpoints to api for get for specific user and accounts
+  - [ ] Update Frontend to match
+- [ ] Google OAuth2
+  - [ ] Web
+  - [ ] iOS
+  - [ ] Android
+  - [ ] Windows
+  - [ ] macOS
+  - [ ] Linux?
+- [ ] Add capabilities for Update and Delete Transactions and Accounts to API
+  - [ ] Update Frontend to match
+- [ ] Forget password feature
+- [ ] Remember me feature
+- [ ] Update Username and Password feature
+- [ ] Notifications?
+- [ ] Profile Pictures?
+- [ ] Hosting?
+- [ ] Constantly update README.md when changes occur
