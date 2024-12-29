@@ -214,44 +214,46 @@ class _AddScreenState extends State<AddScreen> {
       builder: (context) => Dialog( 
         insetPadding: EdgeInsets.only(left: shiftRight),
         child: BasicForm(
-          [FormInput(
-            type:'name', 
-            controller: accountNameController, 
-            hint: 'Savings', 
-            label: 'Account Name', 
-            icon: Icons.account_box, 
-            password: false, 
-            keyboardType: TextInputType.text
-          ),
-          FormInput(
-            type:'description', 
-            controller: accountDescriptionController, 
-            hint: 'Well\'s Fargo Bank', 
-            label: 'Account Description', 
-            icon: Icons.account_balance, 
-            password: false, 
-            keyboardType: TextInputType.text
-          ),
-          FormDropdown(
-            items: ['Savings', 'Checking'],
-            controller: accountTypeController,
-            hint: 'i.e. Savings, Checking',
-            label: 'Account Type',
-            icon: Icons.savings,
-            hasDefaultValue: false,
-          ),
-          FormInput(
-            type:'balance', 
-            controller: accountBalanceController, 
-            hint: '0', 
-            label: 'Account Balance', 
-            icon: Icons.money, 
-            password: false, 
-            keyboardType: TextInputType.number
-          ),], 
-          'Add New Account', 
-          'Add', 
-          () { _addAccount(context); }
+          childrenBeforeSubmit: [
+            FormInput(
+              type:'name', 
+              controller: accountNameController, 
+              hint: 'Savings', 
+              label: 'Account Name', 
+              icon: Icons.account_box, 
+              password: false, 
+              keyboardType: TextInputType.text
+            ),
+            FormInput(
+              type:'description', 
+              controller: accountDescriptionController, 
+              hint: 'Well\'s Fargo Bank', 
+              label: 'Account Description', 
+              icon: Icons.account_balance, 
+              password: false, 
+              keyboardType: TextInputType.text
+            ),
+            FormDropdown(
+              items: ['Savings', 'Checking'],
+              controller: accountTypeController,
+              hint: 'i.e. Savings, Checking',
+              label: 'Account Type',
+              icon: Icons.savings,
+              hasDefaultValue: false,
+            ),
+            FormInput(
+              type:'balance', 
+              controller: accountBalanceController, 
+              hint: '0', 
+              label: 'Account Balance', 
+              icon: Icons.money, 
+              password: false, 
+              keyboardType: TextInputType.number
+            ),
+          ], 
+          formName: 'Add New Account', 
+          submitButtonText: 'Add', 
+          submitButtonCallback: () { _addAccount(context); }
         )
       )
     ).then((_) {
@@ -267,7 +269,7 @@ class _AddScreenState extends State<AddScreen> {
       builder: (context) => Dialog( 
         insetPadding: EdgeInsets.only(left: shiftRight),
         child: BasicForm(
-          [FormInput(
+          childrenBeforeSubmit: [FormInput(
             type:'amount', 
             controller: transactionAmountController, 
             hint: '0.00', 
@@ -324,9 +326,9 @@ class _AddScreenState extends State<AddScreen> {
             password: false, 
             keyboardType: TextInputType.datetime
           ),], 
-          'Add New Transaction', 
-          'Add', 
-          () { _addTransaction(context); }
+          formName: 'Add New Transaction', 
+          submitButtonText:  'Add', 
+          submitButtonCallback: () { _addTransaction(context); }
         )
       )
     ).then((_) {

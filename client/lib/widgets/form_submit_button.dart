@@ -21,17 +21,11 @@ class FormSubmitButton extends StatelessWidget {
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 40,
-        child: ElevatedButton(
+        child: FilledButton(
           onPressed: () { if (formKey.currentState!.validate()) { callback(); } },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-          ),
           child: Text(
             text, 
-            style: TextStyle(color: Theme.of(context).colorScheme.surface, fontSize: 22),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 22),
           ),
         ),
       ),

@@ -38,7 +38,7 @@ class MobileContainer extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton.large(
         shape: CircleBorder(),
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: theme.colorScheme.secondary,
         onPressed: () {
           AddScreen.showAddDialog(context, navigationState);
           navigationState.setPageIndex(0);
@@ -62,33 +62,34 @@ class MobileContainer extends StatelessWidget {
             iconSize: 20,
             elevation: 0,
             backgroundColor: Colors.transparent,
-            selectedItemColor: theme.colorScheme.primary,
+            selectedItemColor: theme.colorScheme.onPrimary,
+            unselectedItemColor: theme.colorScheme.onPrimary.withAlpha(150),
             onTap: (int index) {
               navigationState.setPageIndex(index);
             },
             items: [
               BottomNavigationBarItem(
-                activeIcon: Icon(Icons.home, color: theme.colorScheme.surface),
+                activeIcon: Icon(Icons.home, color: theme.colorScheme.onPrimary),
                 icon: Icon(Icons.home_outlined), 
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                activeIcon: Icon(Icons.dashboard, color: theme.colorScheme.surface),
+                activeIcon: Icon(Icons.dashboard, color: theme.colorScheme.onPrimary),
                 icon: Icon(Icons.dashboard_outlined), 
                 label: 'Dashboard',
               ),
               BottomNavigationBarItem(
-                activeIcon: Icon(Icons.add_circle, color: theme.colorScheme.surface),
+                activeIcon: Icon(Icons.add_circle, color: theme.colorScheme.onPrimary),
                 icon: Icon(Icons.add_circle_outline), 
                 label: 'Add',
               ),
               BottomNavigationBarItem(
-                activeIcon: Icon(Icons.paid, color: theme.colorScheme.surface),
+                activeIcon: Icon(Icons.paid, color: theme.colorScheme.onPrimary),
                 icon: Icon(Icons.paid_outlined), 
                 label: 'Transaction',
               ),
               BottomNavigationBarItem(
-                activeIcon: Icon(Icons.account_circle, color: theme.colorScheme.surface),
+                activeIcon: Icon(Icons.account_circle, color: theme.colorScheme.onPrimary),
                 icon: Icon(Icons.account_circle_outlined), 
                 label: 'Account',
               ),

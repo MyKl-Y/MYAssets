@@ -56,60 +56,77 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasicForm([
-      FormInput(
-        type: 'username', 
-        controller: usernameController, 
-        hint: 'Username', 
-        label: 'Username', 
-        icon: Icons.person, 
-        password: false, 
-        keyboardType: TextInputType.text
-      ),
-      FormInput(
-        type: 'email', 
-        controller: emailController, 
-        hint: 'Email@Email.com', 
-        label: 'Email', 
-        icon: Icons.email, 
-        password: false, 
-        keyboardType: TextInputType.emailAddress
-      ),
-      FormInput(
-        type: 'password', 
-        controller: passwordController, 
-        hint: 'Password', 
-        label: 'Password', 
-        icon: Icons.key, 
-        password: true, 
-        keyboardType: TextInputType.visiblePassword,
-        additionalValidator: (value) {
-          if (value != confirmPasswordController.text) {
-            return 'Passwords do not match';
-          }
-          return null;
-        },
-      ),
-      FormInput(
-        type: 'password', 
-        controller: confirmPasswordController, 
-        hint: 'Password', 
-        label: 'Confirm Password', 
-        icon: Icons.check, 
-        password: true, 
-        keyboardType: TextInputType.visiblePassword,
-        additionalValidator: (value) {
-          if (value != passwordController.text) {
-            return 'Passwords do not match';
-          }
-          return null;
-        },
-      ),
-      //FormSubmitButton("Register", () => _register(context)),
-      TextButton(
-        onPressed: () => Navigator.pop(context), // Navigate back to Login
-        child: Text('Already have an account? Login here'),
-      ),
-    ], 'Register', 'Register', () => _register(context));
+    return Row(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          child: BasicForm(
+            childrenBeforeSubmit: [
+              FormInput(
+                type: 'username', 
+                controller: usernameController, 
+                hint: 'Username', 
+                label: 'Username', 
+                icon: Icons.person, 
+                password: false, 
+                keyboardType: TextInputType.text
+              ),
+              FormInput(
+                type: 'email', 
+                controller: emailController, 
+                hint: 'Email@Email.com', 
+                label: 'Email', 
+                icon: Icons.email, 
+                password: false, 
+                keyboardType: TextInputType.emailAddress
+              ),
+              FormInput(
+                type: 'password', 
+                controller: passwordController, 
+                hint: 'Password', 
+                label: 'Password', 
+                icon: Icons.key, 
+                password: true, 
+                keyboardType: TextInputType.visiblePassword,
+                additionalValidator: (value) {
+                  if (value != confirmPasswordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+              ),
+              FormInput(
+                type: 'password', 
+                controller: confirmPasswordController, 
+                hint: 'Password', 
+                label: 'Confirm Password', 
+                icon: Icons.check, 
+                password: true, 
+                keyboardType: TextInputType.visiblePassword,
+                additionalValidator: (value) {
+                  if (value != passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+              ),
+            ],
+            childrenAfterSubmit: [
+              TextButton(
+                onPressed: () => Navigator.pop(context), // Navigate back to Login
+                child: Text('Already have an account? Login here'),
+              ),
+            ], 
+            formName: 'Register', 
+            submitButtonText: 'Register', 
+            submitButtonCallback: () => _register(context)
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          child: Image.asset('assets/images/logo.png'),
+        ),
+      ]
+    );
   }
 }

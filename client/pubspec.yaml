@@ -18,6 +18,8 @@ dependencies:
 
   provider: ^6.1.2                # For sharing states (Navigation State)
 
+  google_fonts: ^6.2.1            # For using Google Fonts (Custom Fonts)
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -26,6 +28,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets: 
+    - assets/images/
 
 # name: m_y_assets
 # description: "A new Flutter project."

@@ -69,15 +69,16 @@ class _AccountScreenState extends State<AccountScreen> {
                   margin: EdgeInsets.all(20),
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(
                       width: 2, 
-                      color: Theme.of(context).colorScheme.surface
+                      color: Theme.of(context).colorScheme.secondary
                     ),
                   ),
                   child: Icon(
                     Icons.mood,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.surface,
                     size: 50,
                   ),
                 ),

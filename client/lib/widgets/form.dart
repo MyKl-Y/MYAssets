@@ -9,12 +9,20 @@ import 'package:flutter/material.dart';
 import 'form_submit_button.dart';
 
 class BasicForm extends StatefulWidget {
-  final List<Widget> children;
+  final List<Widget>? childrenBeforeSubmit;
+  final List<Widget>? childrenAfterSubmit;
   final String formName;
   final String submitButtonText;
   final Function submitButtonCallback;
 
-  BasicForm(this.children, this.formName, this.submitButtonText, this.submitButtonCallback, {super.key});
+  BasicForm({
+    this.childrenBeforeSubmit = const [], 
+    this.childrenAfterSubmit = const [],
+    required this.formName, 
+    required this.submitButtonText, 
+    required this.submitButtonCallback, 
+    super.key
+  });
 
   @override 
   State<BasicForm> createState() => _BasicFormState();
@@ -38,7 +46,11 @@ class _BasicFormState extends State<BasicForm> {
             maxWidth: MediaQuery.of(context).size.width > 769 
               ? MediaQuery.of(context).size.width * (3 / 8)
               : MediaQuery.of(context).size.width * (7 / 8),
-            maxHeight: 50 + (widget.children.length * 60) + 50
+            maxHeight: 
+              50 // Heading
+              + (widget.childrenBeforeSubmit!.length * 75) // Before (10 for padding, 15 for error)
+              + (widget.childrenAfterSubmit!.length * 50) // After (0 for padding)
+              + 50 // Padding + Submit Button
           ),
           child: Scaffold(
             backgroundColor: Colors.transparent,
@@ -49,8 +61,9 @@ class _BasicFormState extends State<BasicForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...widget.children, 
-                  FormSubmitButton(widget.submitButtonText, widget.submitButtonCallback, _formKey)
+                  ...widget.childrenBeforeSubmit ?? [], 
+                  FormSubmitButton(widget.submitButtonText, widget.submitButtonCallback, _formKey),
+                  ...widget.childrenAfterSubmit ?? [], 
                 ],
               ),
             ),

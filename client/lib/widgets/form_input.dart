@@ -108,7 +108,7 @@ class _FormInputState extends State<FormInput> {
                 _obscureText ? Icons.visibility : Icons.visibility_off,
                 color: _obscureText 
                   ? Theme.of(context).colorScheme.inversePrimary 
-                  : Theme.of(context).colorScheme.inverseSurface,
+                  : Theme.of(context).colorScheme.onSurface,
               ),
               onPressed: () {
                 setState(() {

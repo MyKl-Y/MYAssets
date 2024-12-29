@@ -7,8 +7,9 @@ UI Screen: Login Screen
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter/foundation.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 
 import 'register_screen.dart';
 
@@ -59,35 +60,248 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasicForm([
-      FormInput(
-        type: 'username', 
-        controller: usernameController, 
-        hint: 'Username', 
-        label: 'Username', 
-        icon: Icons.person, 
-        password: false, 
-        keyboardType: TextInputType.text
-      ),
-      FormInput(
-        type: 'password', 
-        controller: passwordController, 
-        hint: 'Password', 
-        label: 'Password', 
-        icon: Icons.key, 
-        password: true, 
-        keyboardType: TextInputType.visiblePassword
-      ),
-      //FormSubmitButton("Login", () => _login(context)),
-      TextButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => RegisterScreen()),
+    return Container(
+      color: Theme.of(context).colorScheme.inverseSurface,
+      child: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth < 769) {
+          return Column(
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.surface,
+                padding: EdgeInsets.all(5),
+                height: MediaQuery.of(context).size.height / 8,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 15), 
+                      child: Image.asset('assets/images/m.y logo.png'),
+                    ),
+                    Text(
+                      ' Assets',
+                      style: GoogleFonts.audiowide(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: MediaQuery.of(context).size.height / 8 - 10,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                //padding: EdgeInsets.only(right: 120),
+                height: MediaQuery.of(context).size.height * (7 / 8),
+                child: BasicForm(
+                  childrenBeforeSubmit: [
+                    FormInput(
+                      type: 'username', 
+                      controller: usernameController, 
+                      hint: 'Username', 
+                      label: 'Username', 
+                      icon: Icons.person, 
+                      password: false, 
+                      keyboardType: TextInputType.text
+                    ),
+                    FormInput(
+                      type: 'password', 
+                      controller: passwordController, 
+                      hint: 'Password', 
+                      label: 'Password', 
+                      icon: Icons.key, 
+                      password: true, 
+                      keyboardType: TextInputType.visiblePassword
+                    ),
+                  ],
+                  childrenAfterSubmit: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                            child: Divider(
+                              color: Theme.of(context).colorScheme.primary,
+                              height: 60,
+                            ),
+                          ),
+                        ),
+                        Text("OR"),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                            child: Divider(
+                              color: Theme.of(context).colorScheme.primary,
+                              height: 60,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      spacing: 5,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: //Icon(Icons.g_mobiledata),
+                            Image.network(
+                              'http://pngimg.com/uploads/google/google_PNG19635.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                          ),
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: //Icon(Icons.g_mobiledata),
+                            Image.network(
+                              'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Don't have an account?"),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => RegisterScreen()),
+                            );
+                          },
+                          child: Text("Register here"),
+                        ),
+                      ],
+                    ),
+                  ], 
+                  formName: 'Login', 
+                  submitButtonText: 'Login', 
+                  submitButtonCallback: () => _login(context)
+                ),
+              ),
+            ],
           );
-        },
-        child: Text("Don't have an account? Register here"),
-      ),
-    ], 'Login', 'Login', () => _login(context));
+        } else {
+          return Row(
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.surface,
+                //padding: EdgeInsets.only(left: 120),
+                width: MediaQuery.of(context).size.width / 2,
+                child: Image.asset('assets/images/m.y logo.png'),
+              ),
+              Container(
+                //padding: EdgeInsets.only(right: 120),
+                width: MediaQuery.of(context).size.width / 2,
+                child: BasicForm(
+                  childrenBeforeSubmit: [
+                    FormInput(
+                      type: 'username', 
+                      controller: usernameController, 
+                      hint: 'Username', 
+                      label: 'Username', 
+                      icon: Icons.person, 
+                      password: false, 
+                      keyboardType: TextInputType.text
+                    ),
+                    FormInput(
+                      type: 'password', 
+                      controller: passwordController, 
+                      hint: 'Password', 
+                      label: 'Password', 
+                      icon: Icons.key, 
+                      password: true, 
+                      keyboardType: TextInputType.visiblePassword
+                    ),
+                  ],
+                  childrenAfterSubmit: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                            child: Divider(
+                              color: Theme.of(context).colorScheme.primary,
+                              height: 60,
+                            ),
+                          ),
+                        ),
+                        Text("OR"),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                            child: Divider(
+                              color: Theme.of(context).colorScheme.primary,
+                              height: 60,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      spacing: 5,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: //Icon(Icons.g_mobiledata),
+                            Image.network(
+                              'http://pngimg.com/uploads/google/google_PNG19635.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                          ),
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: //Icon(Icons.g_mobiledata),
+                            Image.network(
+                              'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Don't have an account?"),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => RegisterScreen()),
+                            );
+                          },
+                          child: Text("Register here"),
+                        ),
+                      ],
+                    ),
+                  ], 
+                  formName: 'Login', 
+                  submitButtonText: 'Login', 
+                  submitButtonCallback: () => _login(context)
+                ),
+              ),
+            ],
+          );
+        }
+      }),
+    );
   }
 }

@@ -69,7 +69,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Timestamp', 
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -80,7 +80,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Amount', 
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -91,7 +91,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Description', 
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -102,7 +102,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Type', 
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -113,7 +113,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Text(
             'Category', 
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold
             ), 
             textAlign: TextAlign.center,
@@ -136,7 +136,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 5.0), 
-              child: Text(transaction['timestamp'], textAlign: TextAlign.center,)
+              child: Text(
+                transaction['timestamp'], 
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: (index % 2) == 0 
+                    ? Theme.of(context).colorScheme.onSurface 
+                    : Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
             ),
             Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(
               (transaction['amount'] as double).toStringAsFixed(2), 
@@ -147,9 +155,42 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 fontWeight: FontWeight.bold
               ), textAlign: TextAlign.center,
             )),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(transaction['description'], textAlign: TextAlign.center,)),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(transaction['type'], textAlign: TextAlign.center,)),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5.0), child: Text(transaction['category'], textAlign: TextAlign.center,))
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0), 
+              child: Text(
+                transaction['description'], 
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: (index % 2) == 0 
+                    ? Theme.of(context).colorScheme.onSurface 
+                    : Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0), 
+              child: Text(
+                transaction['type'], 
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: (index % 2) == 0 
+                    ? Theme.of(context).colorScheme.onSurface 
+                    : Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
+            ),            
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0), 
+              child: Text(
+                transaction['category'], 
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: (index % 2) == 0 
+                    ? Theme.of(context).colorScheme.onSurface 
+                    : Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
+            ),
           ]
         ));
       }
@@ -218,13 +259,18 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                           child: Text(
                                             transaction['timestamp'],
                                             textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              color: (index % 2) == 0 
+                                                ? Theme.of(context).colorScheme.onPrimary 
+                                                : Theme.of(context).colorScheme.onSurface,
+                                            ),
                                           ),
                                         ),
                                         VerticalDivider(
                                           indent: 3,
                                           endIndent: 3,
                                           thickness: 1,
-                                          color: Theme.of(context).colorScheme.inverseSurface,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                         ),
                                         Expanded(
                                           flex: 1,
@@ -271,7 +317,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"),
                         Table(
                           border: TableBorder.all(
-                            color: Theme.of(context).colorScheme.inverseSurface,
+                            color: Theme.of(context).colorScheme.onSurface,
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                           ),
                           children: createTable(account['name'], transactions),

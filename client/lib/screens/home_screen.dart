@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //final transactionMonths = getTransactionMonths(transactionYears[0]);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+      backgroundColor: Theme.of(context).colorScheme.onSurface,
       //appBar: AppBar(title: Text('Hi, ${user['username']}')),
       body: Stack(
         children: [
@@ -264,13 +264,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: MediaQuery.of(context).size.height / 2,
                 decoration: BoxDecoration(
                   //color: Theme.of(context).colorScheme.primary,
-                  gradient: RadialGradient(
+                  gradient: LinearGradient(
                     colors: [
                       Theme.of(context).colorScheme.primary, 
-                      Theme.of(context).colorScheme.inversePrimary
+                      Theme.of(context).colorScheme.inversePrimary,
+                      Theme.of(context).colorScheme.secondary
                     ],
-                    radius: 0.75,
-                    focal: Alignment(0.6, -0.6),
+                    stops: [0, .6, 1],
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
                     tileMode: TileMode.clamp,
                   ),
                   borderRadius: BorderRadius.circular(20)
@@ -284,6 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Current Balance',
                         style: TextStyle(
                           fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
                       Text(
@@ -291,6 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: Theme.of(context).textTheme.displaySmall!.fontSize,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
                       Spacer(),
@@ -301,11 +305,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Accounts: ${accounts.length}',
                             style: TextStyle(
                               fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
+                              color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
                           Icon(
-                            Icons.code
-                            //Icons.api
+                            Icons.code,
+                            //Icons.api,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           )
                         ],
                       ),

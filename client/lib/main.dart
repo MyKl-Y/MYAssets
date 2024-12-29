@@ -71,6 +71,25 @@ class MYAssetsApp extends StatefulWidget {
 class _MYAssetsAppState extends State<MYAssetsApp> {
   ThemeMode _themeMode = ThemeMode.system;
 
+  ThemeData _themeDataLight = ThemeData.light().copyWith(
+    colorScheme: ThemeData.light().colorScheme.copyWith(
+      primary: Color.fromARGB(255, 111, 38, 255),
+      inversePrimary: Color.fromARGB(255, 142, 85, 255),
+      secondary: Color.fromARGB(255, 0, 217, 255),
+      onPrimary: Colors.white,
+    ),
+  );
+
+  ThemeData _themeDataDark = ThemeData.dark().copyWith(
+    colorScheme: ThemeData.dark().colorScheme.copyWith(
+      primary: Color.fromARGB(255, 142, 85, 255),
+      inversePrimary: Color.fromARGB(255, 111, 38, 255),
+      secondary: Color.fromARGB(255, 0, 217, 255),
+      onPrimary: Colors.white,
+    ),
+  );
+
+
   void changeTheme(ThemeMode themeMode) {
     setState(() {
       _themeMode = themeMode;
@@ -82,8 +101,8 @@ class _MYAssetsAppState extends State<MYAssetsApp> {
     if (kIsWeb) {
       return MaterialApp(
           title: 'M.Y.Assets - Personal Finance App',
-          theme: ThemeData(useMaterial3: true),
-          darkTheme: ThemeData.dark(),
+          theme: _themeDataLight,
+          darkTheme: _themeDataDark,
           themeMode: _themeMode,
           home: widget.isLoggedIn ? WebContainer() : LoginScreen(),
         );

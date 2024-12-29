@@ -5,6 +5,7 @@ Container Widget for placement of navigation bar and content for desktop
 */
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/home_screen.dart';
@@ -62,7 +63,29 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
               color: theme.colorScheme.surface,
               child: ListView(
                 children: [
-                  ListTile(title: Text('Menu')),
+                  ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 3), 
+                          child: Image.asset(
+                            'assets/images/m.y logo.png',
+                            height: 25,
+                          ),
+                        ),
+                        Text(
+                          ' Assets',
+                          style: GoogleFonts.audiowide(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   ListTile(
                     leading: Icon(
                       Icons.home, 
@@ -148,12 +171,34 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
               SizedBox(
                 width: 240,
                 child: Scaffold(
-                  appBar: AppBar(title: Text('Menu')),
+                  appBar: AppBar(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 5), 
+                          child: Image.asset(
+                            'assets/images/m.y logo.png',
+                            height: 35,
+                          ),
+                        ),
+                        Text(
+                          ' Assets',
+                          style: GoogleFonts.audiowide(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   body: ListView(
                     children: [
                       ListTile(
                         selected: navigationState.currentPageIndex == 0,
-                        selectedTileColor: theme.colorScheme.inversePrimary,
+                        selectedTileColor: theme.colorScheme.inversePrimary.withAlpha(150),
                         leading: Icon(
                           Icons.home, 
                           color: navigationState.currentPageIndex == 0 
@@ -167,7 +212,7 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                       ),
                       ListTile(
                         selected: navigationState.currentPageIndex == 1,
-                        selectedTileColor: theme.colorScheme.inversePrimary,
+                        selectedTileColor: theme.colorScheme.inversePrimary.withAlpha(150),
                         leading: Icon(
                           Icons.dashboard, 
                           color: navigationState.currentPageIndex == 1 
@@ -181,7 +226,7 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                       ),
                       ListTile(
                         selected: navigationState.currentPageIndex == 2,
-                        selectedTileColor: theme.colorScheme.inversePrimary,
+                        selectedTileColor: theme.colorScheme.inversePrimary.withAlpha(150),
                         leading: Icon(
                           Icons.add_circle, 
                           color: navigationState.currentPageIndex == 2 
@@ -196,7 +241,7 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                       ),
                       ListTile(
                         selected: navigationState.currentPageIndex == 3,
-                        selectedTileColor: theme.colorScheme.inversePrimary,
+                        selectedTileColor: theme.colorScheme.inversePrimary.withAlpha(150),
                         leading: Icon(
                           Icons.paid, 
                           color: navigationState.currentPageIndex == 3 
@@ -210,7 +255,7 @@ class _DesktopContainerState extends State<DesktopContainer> with TickerProvider
                       ),
                       ListTile(
                         selected: navigationState.currentPageIndex == 4,
-                        selectedTileColor: theme.colorScheme.inversePrimary,
+                        selectedTileColor: theme.colorScheme.inversePrimary.withAlpha(150),
                         leading: Icon(
                           Icons.account_circle, 
                           color: navigationState.currentPageIndex == 4 
