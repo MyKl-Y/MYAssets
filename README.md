@@ -151,7 +151,7 @@ project/
 │   │   └── utils.py       # Utility functions
 │   └── requirements.txt   # Backend dependencies
 ├── README.md              # Project documentation
-└── todo.md                # List of features to implement.
+└── todo.md                # List of features to implement
 ```
 
 ## Contributing
