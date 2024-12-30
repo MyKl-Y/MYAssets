@@ -37,6 +37,7 @@ class Account(db.Model):
     description = Column(String(256))
     type = Column(String(64), nullable=False)
     balance = Column(Float, nullable=False)
+    apy = Column(Float, default=0)
     created_at = Column(DateTime, index=True, default=datetime.now(timezone.utc))
     updated_at = Column(DateTime, index=True, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
@@ -48,6 +49,7 @@ class Account(db.Model):
             'description': self.description,
             'type': self.type,
             'balance': self.balance,
+            'apy': self.apy,
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'updated_at': self.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
         }
@@ -60,7 +62,6 @@ class Transaction(db.Model):
     category = Column(String(64), nullable=False)
     account = Column(String(64), ForeignKey('account.id'), nullable=False)
     type = Column(String(64), nullable=False)
-    apy = Column(Float, default=0)
     timestamp = Column(DateTime, index=True, default=datetime.now(timezone.utc))
 
     def __init__(self, **kwargs):

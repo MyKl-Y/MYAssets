@@ -75,16 +75,17 @@ class ApiService {
   }
 
   // Add Account
-  Future<Map<String, dynamic>> addAccount(String name, String description, String accountType, double balance) async {
+  Future<Map<String, dynamic>> addAccount(String name, String description, String accountType, double balance, double apy) async {
     final response = await _authenticatedRequest((accessToken) {
       return http.post(
-        Uri.parse('$baseUrl/accounts'),
+        Uri.parse('$baseUrl/account'),
         headers: {'Authorization': 'Bearer $accessToken', 'Content-Type': 'application/json'},
         body: jsonEncode({
           'name': name,
           'description': description,
           'type': accountType,
-          'balance': balance
+          'balance': balance,
+          'apy': apy,
         }),
       );
     });
@@ -112,11 +113,50 @@ class ApiService {
     }
   }
 
+  // Update Account by ID
+  Future<Map<String, dynamic>> updateAccount(int id, String name, String description, String accountType, double balance, double apy) async {
+    final response = await _authenticatedRequest((accessToken) {
+      return http.put(
+        Uri.parse('$baseUrl/account/$id'),
+        headers: {'Authorization': 'Bearer $accessToken', 'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': name,
+          'description': description,
+          'type': accountType,
+          'balance': balance,
+          'apy': apy,
+        }),
+      );
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update account');
+    }
+  }
+
+  // Delete Account by ID
+  Future<Map<String, dynamic>> deleteAccount(int id) async {
+    final response = await _authenticatedRequest((accessToken) {
+      return http.delete(
+        Uri.parse('$baseUrl/account/$id'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to delete account');
+    }
+  }
+
   // Add Transaction
   Future<Map<String, dynamic>> addTransaction(double amount, String description, String category, String account, String type, String date) async {
     final response = await _authenticatedRequest((accessToken) {
       return http.post(
-        Uri.parse('$baseUrl/transactions'),
+        Uri.parse('$baseUrl/transaction'),
         headers: {'Authorization': 'Bearer $accessToken', 'Content-Type': 'application/json'},
         body: jsonEncode({
           'amount': amount,
@@ -152,7 +192,63 @@ class ApiService {
     }
   }
 
-  // Fetch Transactions
+  // Fetch Transactions by Account
+  Future<List<dynamic>> getTransactionsByAccount(String accountName) async {
+    final response = await _authenticatedRequest((accessToken) {
+      return http.get(
+        Uri.parse('$baseUrl/transaction/$accountName'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load transactions');
+    }
+  }
+
+  // Update Transaction by ID
+  Future<Map<String, dynamic>> updateTransaction(int id, double amount, String description, String category, String account, String type, String date) async {
+    final response = await _authenticatedRequest((accessToken) {
+      return http.put(
+        Uri.parse('$baseUrl/transaction/$id'),
+        headers: {'Authorization': 'Bearer $accessToken', 'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'amount': amount,
+          'description': description,
+          'category': category,
+          'account': account,
+          'type': type,
+          'timestamp': date
+        }),
+      );
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update transaction');
+    }
+  }
+
+  // Delete Transaction by ID
+  Future<Map<String, dynamic>> deleteTransaction(int id) async {
+    final response = await _authenticatedRequest((accessToken) {
+      return http.delete(
+        Uri.parse('$baseUrl/transaction/$id'),
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+    });
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to delete transaction');
+    }
+  }
+
+  // Fetch User
   Future<dynamic> getUser() async {
     final response = await _authenticatedRequest((accessToken) {
       return http.get(

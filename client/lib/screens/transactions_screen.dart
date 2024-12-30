@@ -5,10 +5,16 @@ UI Screen: Transactions Screen
 */
 
 import 'package:flutter/material.dart';
-import 'package:m_y_assets/utils/data_provider.dart';
+import 'package:m_y_assets/widgets/form_dropdown.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/account_form.dart';
+import '../widgets/transaction_form.dart';
+
 import '../services/api_service.dart';
+
+import '../utils/nav_state_manager.dart';
+import '../utils/data_provider.dart';
 
 class TransactionsScreen extends StatefulWidget {
   @override
@@ -17,33 +23,90 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
   final ApiService apiService = ApiService();
-  //List<dynamic> accounts = [];
-  //List<dynamic> transactions = [];
+
+  final NavigationState navigationState = NavigationState();
+
+  List<dynamic> accounts = [];
+  List<dynamic> transactions = [];
+  
   List<Text> accountRows = [];
 
   @override
   void initState() {
     super.initState();
-    // fetchAccounts();
-    // fetchTransactions();
-    Future.microtask(() => context.read<DataProvider>().fetchAccounts());
-    Future.microtask(() => context.read<DataProvider>().fetchTransactions());
+    //Future.microtask(() => context.read<DataProvider>().fetchAccounts());
+    //Future.microtask(() => context.read<DataProvider>().fetchTransactions());
   }
 
-  void createAccounts(List<dynamic> accounts) {
-    for (var account in accounts) {
-      accountRows.add(Text("${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"));
-    }
-  }
-
-  /* void fetchAccounts() async {
+  void _deleteAccount(int id) async {
     try {
-      final data = await apiService.getAccounts();
-      setState(() => accounts = data);
+      Map<String, dynamic> response = await apiService.deleteAccount(id);
+      if (response['message'] == 'Account deleted') {
+        context.read<DataProvider>().refreshAccounts();
+      } else {
+        throw Exception('Failed to delete account: ${response['message']}');
+      }
     } catch (e) {
-      print('Error: $e');
+      throw Exception('Failed to delete account: $e');
     }
-  } */
+  }
+
+  void _updateAccount(int id, Map<String, dynamic> updates) async {
+    try {
+      Map<String, dynamic> response = await apiService.updateAccount(
+        id,
+        updates['name'],
+        updates['description'],
+        updates['type'],
+        updates['balance'],
+        updates['apy'],
+      );
+
+      if (response['message'] != 'Account not found' || response['message'] != 'Unauthorized') {
+        context.read<DataProvider>().refreshAccounts();
+      } else {
+        throw Exception('Failed to update account: ${response['message']}');
+      }
+    } catch (e) {
+      throw Exception('Failed to update account: $e');
+    }
+  }
+
+  void _deleteTransaction(int id) async {
+    try {
+      Map<String, dynamic> response = await apiService.deleteTransaction(id);
+      if (response['message'] == 'Transaction deleted') {
+        context.read<DataProvider>().refreshTransactions();
+        context.read<DataProvider>().refreshAccounts();
+      } else {
+        throw Exception('Failed to delete transaction: ${response['message']}');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete transaction: $e');
+    }
+  }
+
+  void _updateTransaction(int id, Map<String, dynamic> updates) async {
+    try {
+      Map<String, dynamic> response = await apiService.updateTransaction(
+        id,
+        updates['amount'],
+        updates['description'],
+        updates['category'],
+        updates['account'],
+        updates['type'],
+        updates['date'],
+      );
+
+      if (response['message'] != 'Transaction not found' || response['message'] != 'Unauthorized') {
+        context.read<DataProvider>().refreshTransactions();
+      } else {
+        throw Exception('Failed to update transaction: ${response['message']}');
+      }
+    } catch (e) {
+      throw Exception('Failed to update transaction: $e');
+    }
+  }
 
   List<dynamic> createTransactions(String account, List<dynamic> transactions) {
     List<dynamic> transactionRows = [];
@@ -57,7 +120,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return transactionRows;
   }
 
-  List<TableRow> createTable(String account, List<dynamic> transactions) {
+  List<TableRow> createTable(String account, List<dynamic> transactions, double shiftRight) {
     List<TableRow> transactionRows = [TableRow(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
@@ -119,12 +182,24 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             textAlign: TextAlign.center,
           )
         ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0), 
+          child: Text(
+            'Edit', 
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.bold
+            ), 
+            textAlign: TextAlign.center,
+          )
+        ),
       ]
     )];
 
     for (var (index, transaction) in transactions.indexed) {
       if (transaction['account'] == account) {
         transactionRows.add(TableRow(
+          key: ValueKey(transaction['id']),
           decoration: BoxDecoration(
             color: (index % 2) == 0 
               ? Theme.of(context).colorScheme.surface 
@@ -191,6 +266,66 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 ),
               )
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.0), 
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton.filled(
+                    iconSize: 15,
+                    padding: EdgeInsets.all(2),
+                    constraints: BoxConstraints.loose(Size(40, 40)),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.red),
+                    ),
+                    onPressed: () => _deleteTransaction(transaction['id']), 
+                    icon: Icon(Icons.close),
+                  ),
+                  IconButton.filled(
+                    iconSize: 15,
+                    padding: EdgeInsets.all(2),
+                    constraints: BoxConstraints.loose(Size(40, 40)),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.blue),
+                    ),
+                    onPressed: () { 
+                      TextEditingController transactionAmountController = TextEditingController(text: transaction['amount'].toString());
+                      TextEditingController transactionDescriptionController = TextEditingController(text: transaction['description']);
+                      TextEditingController transactionAccountController = TextEditingController(text: transaction['account']);
+                      TextEditingController transactionTypeController = TextEditingController(text: transaction['type']);
+                      TextEditingController transactionCategoryController = TextEditingController(text: transaction['category']);
+                      TextEditingController transactionTimestampController = TextEditingController(text: transaction['timestamp']);
+                      GlobalKey<FormDropdownState> categoryDropdownKey = GlobalKey<FormDropdownState>();
+
+                      TransactionForm.transactionForm(
+                        'Update', 
+                        context, 
+                        navigationState,
+                        shiftRight, 
+                        transactionAmountController, 
+                        transactionDescriptionController, 
+                        transactionAccountController, 
+                        transactionTypeController, 
+                        transactionCategoryController, 
+                        transactionTimestampController, 
+                        categoryDropdownKey, 
+                        _updateTransaction,
+                        transaction['id'],
+                        {
+                          'amount': double.parse(transactionAmountController.text),
+                          'description': transactionDescriptionController.text,
+                          'account': transactionAccountController.text,
+                          'type': transactionTypeController.text,
+                          'category': transactionCategoryController.text,
+                          'date': transactionTimestampController.text,
+                        }
+                      );
+                    }, 
+                    icon: Icon(Icons.edit),
+                  ),
+                ],
+              ),
+            ),
           ]
         ));
       }
@@ -199,21 +334,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return transactionRows;
   }
 
-  /* void fetchTransactions() async {
-    try {
-      final data = await apiService.getTransactions();
-      setState(() => transactions = data);
-    } catch (e) {
-      print('Error: $e');
-    }
-  } */
-
   @override
   Widget build(BuildContext context) {
     dynamic account;
 
-    final accounts = context.watch<DataProvider>().accounts;
-    final transactions = context.watch<DataProvider>().transactions;
+    accounts = context.watch<DataProvider>().accounts;
+    transactions = context.watch<DataProvider>().transactions;
     
     return Scaffold(
       appBar: AppBar(title: Text('Accounts')),
@@ -222,6 +348,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           if (constraints.maxWidth < 769) {
             // Small screens (Mobile)
             return ListView.builder(
+              key: ValueKey(accounts.length),
               itemCount: accounts.length,
               itemBuilder: (context, index) {
                 account = accounts[index];
@@ -229,21 +356,76 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 List<dynamic> transactionRows = createTransactions(account['name'], transactions);
 
                 return Card(
+                  key: ValueKey(account['id']),
                   margin: EdgeInsets.all(20),
                   child: Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account"),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account${account['type'] == 'Savings' ? ' | APY: ${account['apy']}%' : ''}"),
+                            IconButton.filled(
+                              iconSize: 15,
+                              padding: EdgeInsets.all(2),
+                              constraints: BoxConstraints.loose(Size(40, 40)),
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStateProperty.all(Colors.red),
+                              ),
+                              onPressed: () => _deleteAccount(account['id']), 
+                              icon: Icon(Icons.close),
+                            ),
+                            IconButton.filled(
+                              iconSize: 15,
+                              padding: EdgeInsets.all(2),
+                              constraints: BoxConstraints.loose(Size(40, 40)),
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStateProperty.all(Colors.blue),
+                              ),
+                              onPressed: () {
+                                TextEditingController accountNameController = TextEditingController(text: account['name']);
+                                TextEditingController accountDescriptionController = TextEditingController(text: account['description']);
+                                TextEditingController accountTypeController = TextEditingController(text: account['type']);
+                                TextEditingController accountBalanceController = TextEditingController(text: account['balance'].toString());
+                                TextEditingController accountAPYController = TextEditingController(text: account['apy'].toString());
+
+                                AccountForm.accountForm(
+                                  'Update', 
+                                  context, 
+                                  navigationState,
+                                  0, 
+                                  accountNameController, 
+                                  accountDescriptionController, 
+                                  accountTypeController, 
+                                  accountBalanceController, 
+                                  accountAPYController, 
+                                  _updateAccount,
+                                  account['id'],
+                                  {
+                                    'name': accountNameController.text,
+                                    'description': accountDescriptionController.text,
+                                    'type': accountTypeController.text,
+                                    'balance': double.parse(accountBalanceController.text),
+                                    'apy': double.parse(accountAPYController.text),
+                                  }
+                                );
+                              }, 
+                              icon: Icon(Icons.edit),
+                            ),
+                          ]
+                        ),     
                         SizedBox(
                           height: transactionRows.length * 20,
                           child: ListView.builder(
+                            key: ValueKey(transactionRows.length),
                             itemCount: transactionRows.length,
                             itemBuilder: (context, index) {
                               final transaction = transactionRows[index];
 
                               if (transaction['account'] == account['name']) {
                                 return Container( 
+                                  key: ValueKey(transaction['id']),
                                   decoration: BoxDecoration(
                                     color: (index % 2) == 0 
                                       ? Theme.of(context).colorScheme.inversePrimary 
@@ -256,14 +438,75 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                       children: [
                                         Expanded(
                                           flex: 1,
-                                          child: Text(
-                                            transaction['timestamp'],
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                              color: (index % 2) == 0 
-                                                ? Theme.of(context).colorScheme.onPrimary 
-                                                : Theme.of(context).colorScheme.onSurface,
-                                            ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  IconButton.filled(
+                                                    iconSize: 15,
+                                                    padding: EdgeInsets.all(2),
+                                                    constraints: BoxConstraints.loose(Size(40, 40)),
+                                                    style: ButtonStyle(
+                                                      backgroundColor: WidgetStateProperty.all(Colors.red),
+                                                    ),
+                                                    onPressed: () => _deleteTransaction(transaction['id']), 
+                                                    icon: Icon(Icons.close),
+                                                  ),
+                                                  IconButton.filled(
+                                                    iconSize: 15,
+                                                    padding: EdgeInsets.all(2),
+                                                    constraints: BoxConstraints.loose(Size(40, 40)),
+                                                    style: ButtonStyle(
+                                                      backgroundColor: WidgetStateProperty.all(Colors.blue),
+                                                    ),
+                                                    onPressed: () { 
+                                                      TextEditingController transactionAmountController = TextEditingController(text: transaction['amount'].toString());
+                                                      TextEditingController transactionDescriptionController = TextEditingController(text: transaction['description']);
+                                                      TextEditingController transactionAccountController = TextEditingController(text: transaction['account']);
+                                                      TextEditingController transactionTypeController = TextEditingController(text: transaction['type']);
+                                                      TextEditingController transactionCategoryController = TextEditingController(text: transaction['category']);
+                                                      TextEditingController transactionTimestampController = TextEditingController(text: transaction['timestamp']);
+                                                      GlobalKey<FormDropdownState> categoryDropdownKey = GlobalKey<FormDropdownState>();
+
+                                                      TransactionForm.transactionForm(
+                                                        'Update', 
+                                                        context, 
+                                                        navigationState,
+                                                        0, 
+                                                        transactionAmountController, 
+                                                        transactionDescriptionController, 
+                                                        transactionAccountController, 
+                                                        transactionTypeController, 
+                                                        transactionCategoryController, 
+                                                        transactionTimestampController, 
+                                                        categoryDropdownKey, 
+                                                        _updateTransaction,
+                                                        transaction['id'],
+                                                        {
+                                                          'amount': double.parse(transactionAmountController.text),
+                                                          'description': transactionDescriptionController.text,
+                                                          'account': transactionAccountController.text,
+                                                          'type': transactionTypeController.text,
+                                                          'category': transactionCategoryController.text,
+                                                          'date': transactionTimestampController.text,
+                                                        }
+                                                      );
+                                                    }, 
+                                                    icon: Icon(Icons.edit),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                transaction['timestamp'].toString().split(' ')[0],
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                  color: (index % 2) == 0 
+                                                    ? Theme.of(context).colorScheme.onPrimary 
+                                                    : Theme.of(context).colorScheme.onSurface,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                         VerticalDivider(
@@ -303,32 +546,90 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             );
           } else {
             // Large screens (Desktop)
-            return ListView.builder(
-              itemCount: accounts.length,
-              itemBuilder: (context, index) {
-                account = accounts[index];
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return ListView.builder(
+                  key: ValueKey(accounts.length),
+                  itemCount: accounts.length,
+                  itemBuilder: (context, index) {
+                    final account = accounts[index];
 
-                List<dynamic> transactionRows = createTransactions(account['name'], transactions);
+                    List<dynamic> transactionRows = createTransactions(account['name'], transactions);
 
-                return Card(
-                  margin: EdgeInsets.all(20),
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}"),
-                        Table(
-                          border: TableBorder.all(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                          ),
-                          children: createTable(account['name'], transactionRows),
-                        ),
-                      ]
-                    )
-                  )
+                    return Card(
+                      key: ValueKey(account['id']),
+                      margin: EdgeInsets.all(20),
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("${account['name']}: ${account['description'] ?? ''} ${account['type']} Account | Balance: ${account['balance']}${account['type'] == 'Savings' ? ' | APY: ${account['apy']}%' : ''}"),
+                                IconButton.filled(
+                                  iconSize: 15,
+                                  padding: EdgeInsets.all(2),
+                                  constraints: BoxConstraints.loose(Size(40, 40)),
+                                  style: ButtonStyle(
+                                    backgroundColor: WidgetStateProperty.all(Colors.red),
+                                  ),
+                                  onPressed: () => _deleteAccount(account['id']), 
+                                  icon: Icon(Icons.close),
+                                ),
+                                IconButton.filled(
+                                  iconSize: 15,
+                                  padding: EdgeInsets.all(2),
+                                  constraints: BoxConstraints.loose(Size(40, 40)),
+                                  style: ButtonStyle(
+                                    backgroundColor: WidgetStateProperty.all(Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    TextEditingController accountNameController = TextEditingController(text: account['name']);
+                                    TextEditingController accountDescriptionController = TextEditingController(text: account['description']);
+                                    TextEditingController accountTypeController = TextEditingController(text: account['type']);
+                                    TextEditingController accountBalanceController = TextEditingController(text: account['balance'].toString());
+                                    TextEditingController accountAPYController = TextEditingController(text: account['apy'].toString());
+
+                                    AccountForm.accountForm(
+                                      'Update', 
+                                      context, 
+                                      navigationState,
+                                      constraints.maxWidth > 769 ? 240.5 : 0, 
+                                      accountNameController, 
+                                      accountDescriptionController, 
+                                      accountTypeController, 
+                                      accountBalanceController, 
+                                      accountAPYController, 
+                                      _updateAccount,
+                                      account['id'],
+                                      {
+                                        'name': accountNameController.text,
+                                        'description': accountDescriptionController.text,
+                                        'type': accountTypeController.text,
+                                        'balance': double.parse(accountBalanceController.text),
+                                        'apy': double.parse(accountAPYController.text),
+                                      }
+                                    );
+                                  }, 
+                                  icon: Icon(Icons.edit),
+                                ),
+                              ]
+                            ),
+                            Table(
+                              border: TableBorder.all(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                borderRadius: BorderRadius.all(Radius.circular(8)),
+                              ),
+                              children: createTable(account['name'], transactionRows, constraints.maxWidth > 769 ? 240.5 : 0),
+                            ),
+                          ]
+                        )
+                      )
+                    );
+                  },
                 );
-              },
+              }
             );
           }
         },
