@@ -1,6 +1,6 @@
 # TODO
-- [ ] Add Endpoints to api for get for specific user and accounts
-  - [ ] Update Frontend to match
+- [X] Add Endpoints to api for get for specific user and accounts
+  - [X] Update Frontend to match
 - [ ] Google OAuth2
   - [ ] Web
   - [ ] iOS
@@ -8,8 +8,8 @@
   - [ ] Windows
   - [ ] macOS
   - [ ] Linux?
-- [ ] Add capabilities for Update and Delete Transactions and Accounts to API
-  - [ ] Update Frontend to match
+- [X] Add capabilities for Update and Delete Transactions and Accounts to API
+  - [X] Update Frontend to match
 - [ ] Forget password feature
 - [ ] Remember me feature
 - [ ] Update Username and Password feature
