@@ -107,15 +107,22 @@ A robust and scalable Flutter application for managing user accounts, budgets, a
 - `POST /register`: User registration.
 - `POST /google-login`: Google OAuth2 login.
 - `POST /refresh`: Refresh JWT access token.
+
 ### User
 - `GET /user`: Fetch the logged-in user.
+
 ### Accounts
 - `GET /accounts`: Retrieve all user accounts.
 - `POST /accounts`: Add a new account.
+- `PUT /account/<id>`: Updates an account by its ID.
+- `DELETE /account/<id>`: Deletes an account by its ID.
 
 ### Transactions
 - `GET /transactions`: Retrieve all user transactions.
+- `GET /transactions/<account>`: Retrieve all transactions for a given account.
 - `POST /transactions`: Add a new transaction.
+- `PUT /transaction/<id>`: Updates a transaction by its ID.
+- `DELETE /transaction/<id>`: Deletes a transaction by uts ID.
 
 ## Google OAuth2 Setup
 1. Create a new project in the Google Cloud Console.
@@ -134,7 +141,9 @@ project/
 │   │   ├── widgets/       # Reusable components
 │   │   ├── services/      # API service integration
 │   │   └── utils/         # State management and helpers
-│   └── pubspec.yaml       # Frontend dependencies
+│   ├── pubspec.yaml       # Frontend dependencies
+│   └── assets/            # Assets
+│       └── images/        # Images
 ├── server/                # Flask backend
 │   ├── app/
 │   │   ├── api.py         # API routes
