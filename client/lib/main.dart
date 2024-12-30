@@ -100,7 +100,7 @@ class _MYAssetsAppState extends State<MYAssetsApp> {
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return MaterialApp(
-          title: 'M.Y.Assets - Personal Finance App',
+          title: 'm.y Assets - Finance Tracker',
           theme: _themeDataLight,
           darkTheme: _themeDataDark,
           themeMode: _themeMode,
@@ -109,7 +109,7 @@ class _MYAssetsAppState extends State<MYAssetsApp> {
     } else {
       if (Platform.isIOS || Platform.isAndroid) {
         return MaterialApp(
-          title: 'M.Y.Assets - Personal Finance App',
+          title: 'm.y Assets - Finance Tracker',
           theme: ThemeData(useMaterial3: true),
           darkTheme: ThemeData.dark(),
           themeMode: _themeMode,
@@ -117,7 +117,7 @@ class _MYAssetsAppState extends State<MYAssetsApp> {
         );
       } else {
         return MaterialApp(
-          title: 'M.Y.Assets - Personal Finance App',
+          title: 'm.y Assets - Finance Tracker',
           theme: ThemeData(useMaterial3: true),
           darkTheme: ThemeData.dark(),
           themeMode: _themeMode,
