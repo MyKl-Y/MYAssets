@@ -150,7 +150,8 @@ project/
 │   │   ├── models.py      # Database models
 │   │   └── utils.py       # Utility functions
 │   └── requirements.txt   # Backend dependencies
-└── README.md              # Project documentation
+├── README.md              # Project documentation
+└── todo.md                # List of features to implement.
 ```
 
 ## Contributing
